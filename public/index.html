@@ -1,7 +1,15 @@
 <!doctype html>
 <html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f97316"><title>HarTrack</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f5f7fa;color:#111827;font-family:Arial,sans-serif}.app{max-width:1050px;margin:auto;padding:14px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.brand{display:flex;gap:10px;align-items:center}.logo{width:42px;height:42px;border-radius:13px;background:#f97316;color:#fff;display:grid;place-items:center;font-weight:900}.brand h1{margin:0}.muted{font-size:12px;color:#6b7280}.pill{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:9px 11px;font-size:12px;font-weight:bold}.tabs{display:flex;gap:6px;overflow:auto;margin-bottom:12px}.tab,.btn{border:0;border-radius:11px;padding:10px 12px;font-weight:bold;cursor:pointer}.tab{background:#fff;border:1px solid #e5e7eb}.tab.active,.primary{background:#111827;color:#fff}.page{display:none}.page.active{display:block}.hero{background:#111827;color:#fff;border-radius:20px;padding:22px;margin-bottom:12px}.hero h2{margin:0 0 6px}.card{background:#fff;border:1px solid #e5e7eb;border-radius:17px;padding:15px;margin-bottom:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{background:#f3f4f6;border-radius:12px;padding:11px;text-align:center}.metric b{display:block;font-size:18px}.metric span{font-size:10px;color:#6b7280}.form{display:grid;grid-template-columns:1fr 1fr;gap:9px}.field label{display:block;font-size:11px;font-weight:bold;margin-bottom:4px}.field input,.field select{width:100%;padding:10px;border:1px solid #d1d5db;border-radius:10px}.full{grid-column:1/-1}.bar{height:9px;background:#edf0f4;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:#111827}.barrow{display:grid;grid-template-columns:80px 1fr 40px;gap:7px;align-items:center;margin:9px 0;font-size:11px}.scanner{text-align:center;border:2px dashed #d1d5db;border-radius:14px;padding:25px}.result{background:#f8fafc;border-radius:12px;padding:12px;margin-top:12px}.scan-item{border-top:1px solid #e5e7eb;padding:14px 0}.scan-item:first-child{border-top:0}.scan-grid{display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:8px;margin-top:9px}.scan-grid label{font-size:10px;font-weight:bold;color:#6b7280}.scan-grid input{width:100%;padding:9px;border:1px solid #d1d5db;border-radius:9px;margin-top:4px}.scan-total{margin-top:12px;padding:12px;border-radius:11px;background:#fff7ed;border:1px solid #fed7aa}.scan-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 0;border-top:1px solid #e5e7eb}.check{width:20px;height:20px}.exercise{border:1px solid #e5e7eb;border-radius:12px;padding:11px;margin:7px 0}.exercise small{display:block;color:#6b7280;margin-top:4px}.note{font-size:11px;background:#fffbeb;color:#92400e;padding:10px;border-radius:10px}.hide{display:none!important}.orange{color:#f97316}@media(max-width:700px){.grid,.form{grid-template-columns:1fr}.full{grid-column:auto}.metrics{grid-template-columns:1fr 1fr}.scan-grid{grid-template-columns:1fr 1fr}.scan-grid label:first-child{grid-column:1/-1}}
+*{box-sizing:border-box}body{margin:0;background:#f5f7fa;color:#111827;font-family:Arial,sans-serif}.app{max-width:1050px;margin:auto;padding:14px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.brand{display:flex;gap:10px;align-items:center}.logo{width:42px;height:42px;border-radius:13px;background:#f97316;color:#fff;display:grid;place-items:center;font-weight:900}.brand h1{margin:0}.muted{font-size:12px;color:#6b7280}.pill{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:9px 11px;font-size:12px;font-weight:bold}.tabs{display:flex;gap:6px;overflow:auto;margin-bottom:12px}.tab,.btn{border:0;border-radius:11px;padding:10px 12px;font-weight:bold;cursor:pointer}.tab{background:#fff;border:1px solid #e5e7eb}.tab.active,.primary{background:#111827;color:#fff}.page{display:none}.page.active{display:block}.hero{background:#111827;color:#fff;border-radius:20px;padding:22px;margin-bottom:12px}.hero h2{margin:0 0 6px}.card{background:#fff;border:1px solid #e5e7eb;border-radius:17px;padding:15px;margin-bottom:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{background:#f3f4f6;border-radius:12px;padding:11px;text-align:center}.metric b{display:block;font-size:18px}.metric span{font-size:10px;color:#6b7280}.form{display:grid;grid-template-columns:1fr 1fr;gap:9px}.field label{display:block;font-size:11px;font-weight:bold;margin-bottom:4px}.field input,.field select{width:100%;padding:10px;border:1px solid #d1d5db;border-radius:10px}.full{grid-column:1/-1}.bar{height:9px;background:#edf0f4;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:#111827}.barrow{display:grid;grid-template-columns:80px 1fr 40px;gap:7px;align-items:center;margin:9px 0;font-size:11px}.scanner{text-align:center;border:2px dashed #d1d5db;border-radius:14px;padding:25px}.result{background:#f8fafc;border-radius:12px;padding:12px;margin-top:12px}.scan-item{border-top:1px solid #e5e7eb;padding:14px 0}.scan-item:first-child{border-top:0}.scan-grid{display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:8px;margin-top:9px}.scan-grid label{font-size:10px;font-weight:bold;color:#6b7280}.scan-grid input{width:100%;padding:9px;border:1px solid #d1d5db;border-radius:9px;margin-top:4px}.scan-total{margin-top:12px;padding:12px;border-radius:11px;background:#fff7ed;border:1px solid #fed7aa}.scan-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.food-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.food-edit{background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:12px}
+.food-edit-grid{display:grid;grid-template-columns:1.4fr repeat(5,1fr);gap:7px;margin-top:8px}
+.food-edit-grid label{font-size:10px;font-weight:bold;color:#6b7280}
+.food-edit-grid input{width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;margin-top:3px}
+.btn.small{padding:7px 9px;font-size:11px}
+@media(max-width:700px){.food-edit-grid{grid-template-columns:1fr 1fr}.food-edit-grid label:first-child{grid-column:1/-1}}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 0;border-top:1px solid #e5e7eb}.check{width:20px;height:20px}.exercise{border:1px solid #e5e7eb;border-radius:12px;padding:11px;margin:7px 0}.exercise small{display:block;color:#6b7280;margin-top:4px}.note{font-size:11px;background:#fffbeb;color:#92400e;padding:10px;border-radius:10px}.hide{display:none!important}.orange{color:#f97316}@media(max-width:700px){.grid,.form{grid-template-columns:1fr}.full{grid-column:auto}.metrics{grid-template-columns:1fr 1fr}.scan-grid{grid-template-columns:1fr 1fr}.scan-grid label:first-child{grid-column:1/-1}}
 </style></head><body><main class="app">
 <header class="top"><div class="brand"><div class="logo">HT</div><div><h1>HarTrack</h1><div class="muted">Personal Fitness & Nutrition</div></div></div><div class="pill" id="pill">👤 Guest</div></header>
 <nav class="tabs"><button class="tab active" data-p="day">My Day</button><button class="tab" data-p="profile">Profile</button><button class="tab" data-p="nutrition">Nutrition</button><button class="tab" data-p="training">Training</button><button class="tab" data-p="progress">Progress</button><button class="tab" data-p="scan">AI Food Scanner</button></nav>
@@ -18,7 +26,7 @@
 <div class="full"><button class="btn primary" onclick="saveProfile()">Simpan Profil & Hitung</button></div></div></div><div id="presult" class="grid hide"><div class="card"><h3>🧮 BMI</h3><div style="font-size:42px;font-weight:900" id="bmi">—</div><b id="bmicat">—</b><p class="muted" id="ideal">—</p></div><div class="card"><h3>🎯 Target</h3><div class="metrics"><div class="metric"><b id="calTarget">—</b><span>kcal</span></div><div class="metric"><b id="proTarget">—</b><span>protein</span></div><div class="metric"><b id="targetShow">—</b><span>target kg</span></div></div></div></div></section>
 
 <section id="nutrition" class="page"><div class="hero"><h2>🍽️ Nutrition Tracker</h2><p>Manual input, cairan, dan hasil AI Food Scanner tersimpan di hari ini.</p></div><div class="grid"><div class="card"><h3>Target & progress</h3><div class="metrics"><div class="metric"><b id="ncal">—</b><span>kcal</span></div><div class="metric"><b id="npro">—</b><span>protein</span></div><div class="metric"><b id="nwater">0</b><span>ml air</span></div></div><div class="barrow"><span>Protein</span><div class="bar"><i id="bp"></i></div><b id="pp">0%</b></div><div class="barrow"><span>Karbo</span><div class="bar"><i id="bc"></i></div><b id="cp">0%</b></div><div class="barrow"><span>Lemak</span><div class="bar"><i id="bf"></i></div><b id="fp">0%</b></div><div class="barrow"><span>Air</span><div class="bar"><i id="bw"></i></div><b id="wp">0%</b></div></div><div class="card"><h3>💧 Cairan</h3><div class="form"><div class="field"><label>Jenis</label><select id="drink"><option>Air putih</option><option>Kopi</option><option>Teh</option><option>Susu</option><option>Jus</option><option>Minuman lain</option></select></div><div class="field"><label>Jumlah ml</label><input id="ml" type="number"></div><div><button class="btn primary" onclick="addDrink()">Tambah</button></div></div><div id="drinks" class="muted" style="margin-top:10px"></div></div></div>
-<div class="card"><h3>➕ Input makanan manual</h3><div class="form"><div class="field"><label>Nama</label><input id="fn"></div><div class="field"><label>Kalori</label><input id="fc" type="number"></div><div class="field"><label>Protein g</label><input id="fpv" type="number"></div><div class="field"><label>Karbo g</label><input id="fcarb" type="number"></div><div class="field"><label>Lemak g</label><input id="ffat" type="number"></div><div><button class="btn primary" onclick="addFood()">Simpan</button></div></div></div><div class="card"><h3>🍽️ Makanan hari ini</h3><div id="foods" class="muted">Belum ada.</div></div></section>
+<div class="card"><h3>➕ Input makanan manual</h3><div class="form"><div class="field"><label>Nama</label><input id="fn"></div><div class="field"><label>Gramasi g</label><input id="fportion" type="number" min="0"></div><div class="field"><label>Kalori</label><input id="fc" type="number" min="0"></div><div class="field"><label>Protein g</label><input id="fpv" type="number" min="0"></div><div class="field"><label>Karbo g</label><input id="fcarb" type="number" min="0"></div><div class="field"><label>Lemak g</label><input id="ffat" type="number" min="0"></div><div><button class="btn primary" onclick="addFood()">Simpan</button></div></div></div><div class="card"><h3>🍽️ Makanan hari ini</h3><div class="note" style="margin-bottom:10px">Human error bisa diperbaiki. Setiap makanan yang sudah tersimpan dapat <b>diedit</b> atau <b>dihapus</b> tanpa menghapus makanan lainnya.</div><div id="foods" class="muted">Belum ada.</div></div></section>
 
 <section id="training" class="page"><div class="hero"><h2>🏋️ Training Center</h2><p>Program menyesuaikan goal, level, equipment, frekuensi, dan durasi.</p></div><div class="card"><h3 id="ttitle">Buat profil terlebih dahulu</h3><div id="exercises"></div></div><div class="card"><h3>🏃 Cardio</h3><div class="row"><div><b>Cardio hari ini</b><div class="muted">20 menit · intensitas sedang</div></div><input id="cardio" class="check" type="checkbox" onchange="state.cardio=this.checked;save();refresh()"></div></div><div class="card"><h3>📝 Hasil latihan</h3><textarea id="wnote" style="width:100%;min-height:80px;border:1px solid #d1d5db;border-radius:10px;padding:9px" placeholder="Catatan beban, repetisi, rasa latihan..."></textarea><br><br><button class="btn primary" onclick="saveNote()">Simpan progress</button></div></section>
 
@@ -145,7 +153,115 @@ function saveProfile(){
 function bmiEl(){bmi.textContent=state.profile.bmi.toFixed(1);bmicat.textContent=state.profile.bmi<18.5?'Underweight':state.profile.bmi<25?'Normal':state.profile.bmi<30?'Overweight':'Obesity';const h=state.profile.height/100;ideal.textContent='Rentang BMI 18,5–24,9: '+(18.5*h*h).toFixed(1)+' – '+(24.9*h*h).toFixed(1)+' kg';calTarget.textContent=state.profile.cal;proTarget.textContent=state.profile.pro+' g';targetShow.textContent=state.profile.target+' kg'}
 function names(){const g=state.profile?.goal;if(g==='Fat Loss')return ['Goblet Squat','Push Up','Lat Pulldown','Romanian Deadlift','Shoulder Press','Core'];if(g==='Muscle Gain')return ['Squat','Bench Press','Lat Pulldown','Romanian Deadlift','Shoulder Press','Biceps Curl'];if(g==='Strength')return ['Squat','Bench Press','Deadlift','Overhead Press','Row','Core'];return ['Squat','Push Up','Row','Lunge','Shoulder Press','Core']}
 function renderTraining(){if(!state.profile){ttitle.textContent='Buat profil terlebih dahulu';exercises.innerHTML='';return}ttitle.textContent=state.profile.goal+' · '+state.profile.level+' · '+state.profile.days+'x/minggu';exercises.innerHTML=names().map((n,i)=>`<div class="exercise"><div class="row" style="border:0;padding:0"><div><b>${n}</b><small>3 set · 8–12 reps · ${state.profile.equipment}</small></div><input class="check" type="checkbox" ${state.exercise[i]?'checked':''} onchange="state.exercise[${i}]=this.checked;save();refresh()"></div></div>`).join('')}
-function addFood(){const c=+fc.value||0;if(!c)return alert('Isi kalori.');state.foods.push({n:fn.value||'Makanan',c,p:+fpv.value||0,carb:+fcarb.value||0,f:+ffat.value||0});[fn,fc,fpv,fcarb,ffat].forEach(x=>x.value='');save();refresh()}
+function addFood(){
+  const c=+fc.value||0;
+  if(!c)return alert('Isi kalori.');
+  state.foods.push({
+    n:fn.value.trim()||'Makanan',
+    portion:+fportion.value||0,
+    c,
+    p:+fpv.value||0,
+    carb:+fcarb.value||0,
+    f:+ffat.value||0,
+    source:'manual'
+  });
+  [fn,fportion,fc,fpv,fcarb,ffat].forEach(x=>x.value='');
+  save();
+  refresh();
+}
+
+function renderFoods(){
+  if(!state.foods.length){
+    foods.innerHTML='Belum ada.';
+    return;
+  }
+
+  foods.innerHTML=state.foods.map((x,i)=>{
+    if(x._editing){
+      return `<div class="food-edit">
+        <div><b>Edit makanan #${i+1}</b></div>
+        <div class="food-edit-grid">
+          <label>Nama<input id="edit-food-name-${i}" value="${escAttr(x.n||'Makanan')}"></label>
+          <label>Gramasi g<input id="edit-food-portion-${i}" type="number" min="0" step="1" value="${Number(x.portion||0)}"></label>
+          <label>Kalori<input id="edit-food-cal-${i}" type="number" min="0" step="1" value="${Number(x.c||0)}"></label>
+          <label>Protein g<input id="edit-food-pro-${i}" type="number" min="0" step="0.1" value="${Number(x.p||0)}"></label>
+          <label>Karbo g<input id="edit-food-carb-${i}" type="number" min="0" step="0.1" value="${Number(x.carb||0)}"></label>
+          <label>Lemak g<input id="edit-food-fat-${i}" type="number" min="0" step="0.1" value="${Number(x.f||0)}"></label>
+        </div>
+        <div class="food-actions">
+          <button class="btn primary small" onclick="saveFoodEdit(${i})">✓ Simpan perubahan</button>
+          <button class="btn small" onclick="cancelFoodEdit(${i})">Batal</button>
+        </div>
+      </div>`;
+    }
+
+    const portion=x.portion?` · ${x.portion} g`:'';
+    const source=x.source==='ai'?' · AI Scan':'';
+    return `<div class="row">
+      <div style="flex:1">
+        <b>${esc(x.n||'Makanan')}</b>
+        <div class="muted">${x.c||0} kcal · P ${x.p||0}g · K ${x.carb||0}g · L ${x.f||0}g${portion}${source}</div>
+      </div>
+      <div class="food-actions">
+        <button class="btn small" onclick="editFood(${i})">✏️ Edit</button>
+        <button class="btn small" onclick="deleteFood(${i})">🗑️ Hapus</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function editFood(i){
+  if(!state.foods[i])return;
+  state.foods.forEach(x=>{delete x._editing});
+  state.foods[i]._editing=true;
+  save();
+  refresh();
+}
+
+function cancelFoodEdit(i){
+  if(!state.foods[i])return;
+  delete state.foods[i]._editing;
+  save();
+  refresh();
+}
+
+function saveFoodEdit(i){
+  const x=state.foods[i];
+  if(!x)return;
+
+  const name=document.getElementById('edit-food-name-'+i)?.value.trim()||'Makanan';
+  const portion=Number(document.getElementById('edit-food-portion-'+i)?.value||0);
+  const c=Number(document.getElementById('edit-food-cal-'+i)?.value||0);
+  const pro=Number(document.getElementById('edit-food-pro-'+i)?.value||0);
+  const carb=Number(document.getElementById('edit-food-carb-'+i)?.value||0);
+  const fat=Number(document.getElementById('edit-food-fat-'+i)?.value||0);
+
+  if(c<=0){
+    alert('Kalori harus lebih dari 0.');
+    return;
+  }
+
+  x.n=name;
+  x.portion=Math.max(0,portion);
+  x.c=Math.max(0,c);
+  x.p=Math.max(0,pro);
+  x.carb=Math.max(0,carb);
+  x.f=Math.max(0,fat);
+  delete x._editing;
+
+  save();
+  refresh();
+}
+
+function deleteFood(i){
+  const x=state.foods[i];
+  if(!x)return;
+  if(!confirm(`Hapus "${x.n||'Makanan'}" dari Nutrition Tracker hari ini?`))return;
+  state.foods.splice(i,1);
+  save();
+  refresh();
+}
+
 function addDrink(){const x=+ml.value||0;if(!x)return alert('Isi ml.');state.drinks.push({type:drink.value,ml:x});ml.value='';save();refresh()}
 function saveNote(){state.history.unshift({date:new Date().toLocaleString('id-ID'),exercise:state.exercise.filter(Boolean).length,cardio:state.cardio,note:wnote.value});save();refresh();alert('Progress latihan disimpan.')}
 
@@ -445,7 +561,7 @@ function refresh(){
   const cal=state.foods.reduce((s,x)=>s+x.c,0),pro=state.foods.reduce((s,x)=>s+x.p,0),carb=state.foods.reduce((s,x)=>s+x.carb,0),fat=state.foods.reduce((s,x)=>s+x.f,0),water=state.drinks.reduce((s,x)=>s+x.ml,0),pp=Math.min(100,state.profile?pro/state.profile.pro*100:0),cp=Math.min(100,carb*4/(state.profile?.cal||2000)*100),fp=Math.min(100,fat*9/(state.profile?.cal||2000)*100),wp=Math.min(100,water/2500*100),done=state.exercise.filter(Boolean).length,work=Math.round(done/6*80+(state.cardio?20:0)),nutrition=Math.round((Math.min(100,state.profile?cal/state.profile.cal*100:0)+pp+wp)/3),score=Math.round((work+nutrition)/2);
   dcal.textContent=Math.round(cal)+'/'+(state.profile?.cal||'—');dpro.textContent=Math.round(pp)+'%';dwater.textContent=Math.round(wp)+'%';dex.textContent=done+'/6';dc.textContent=state.cardio?20:0;dover.textContent=score+'%';
   [['bp',pp,'pp'],['bc',cp,'cp'],['bf',fp,'fp'],['bw',wp,'wp']].forEach(x=>{document.getElementById(x[0]).style.width=x[1]+'%';document.getElementById(x[2]).textContent=Math.round(x[1])+'%'});
-  foods.innerHTML=state.foods.length?state.foods.map(x=>`<div class="row"><div><b>${esc(x.n)}</b><div class="muted">${x.c} kcal · P ${x.p}g · K ${x.carb}g · L ${x.f}g${x.portion?' · '+x.portion+' g':''}</div></div></div>`).join(''):'Belum ada.';
+  renderFoods();
   drinks.innerHTML=state.drinks.length?state.drinks.map(x=>x.type+' — '+x.ml+' ml').join('<br>'):'Belum ada.';
   daylist.innerHTML=`<div class="row"><span>🍽️ Nutrition</span><b>${nutrition}%</b></div><div class="row"><span>🏋️ Strength</span><b>${done}/6</b></div><div class="row"><span>🏃 Cardio</span><b>${state.cardio?'✓ 20 min':'—'}</b></div>`;
   document.getElementById('score').textContent=score+'%';pex.textContent=done;pcardio.textContent=state.cardio?20:0;pmin.textContent=(done*8)+(state.cardio?20:0);
