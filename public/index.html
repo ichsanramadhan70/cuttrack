@@ -1,46 +1,2637 @@
 <!doctype html>
-<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111827"><title>CutTrack</title>
-<style>
-*{box-sizing:border-box}body{margin:0;background:#f5f7fa;color:#111827;font-family:Arial,sans-serif}.app{max-width:1050px;margin:auto;padding:14px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.brand{display:flex;gap:10px;align-items:center}.logo{width:42px;height:42px;border-radius:13px;background:#111827;color:#fff;display:grid;place-items:center;font-weight:900}.brand h1{margin:0}.muted{font-size:12px;color:#6b7280}.pill{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:9px 11px;font-size:12px;font-weight:bold}.tabs{display:flex;gap:6px;overflow:auto;margin-bottom:12px}.tab,.btn{border:0;border-radius:11px;padding:10px 12px;font-weight:bold;cursor:pointer}.tab{background:#fff;border:1px solid #e5e7eb}.tab.active,.primary{background:#111827;color:#fff}.page{display:none}.page.active{display:block}.hero{background:#111827;color:#fff;border-radius:20px;padding:22px;margin-bottom:12px}.hero h2{margin:0 0 6px}.card{background:#fff;border:1px solid #e5e7eb;border-radius:17px;padding:15px;margin-bottom:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{background:#f3f4f6;border-radius:12px;padding:11px;text-align:center}.metric b{display:block;font-size:18px}.metric span{font-size:10px;color:#6b7280}.form{display:grid;grid-template-columns:1fr 1fr;gap:9px}.field label{display:block;font-size:11px;font-weight:bold;margin-bottom:4px}.field input,.field select{width:100%;padding:10px;border:1px solid #d1d5db;border-radius:10px}.full{grid-column:1/-1}.bar{height:9px;background:#edf0f4;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:#111827}.barrow{display:grid;grid-template-columns:80px 1fr 40px;gap:7px;align-items:center;margin:9px 0;font-size:11px}.scanner{text-align:center;border:2px dashed #d1d5db;border-radius:14px;padding:25px}.result{background:#f8fafc;border-radius:12px;padding:12px;margin-top:12px}.row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 0;border-top:1px solid #e5e7eb}.check{width:20px;height:20px}.exercise{border:1px solid #e5e7eb;border-radius:12px;padding:11px;margin:7px 0}.exercise small{display:block;color:#6b7280;margin-top:4px}.note{font-size:11px;background:#fffbeb;color:#92400e;padding:10px;border-radius:10px}.hide{display:none!important}@media(max-width:700px){.grid,.form{grid-template-columns:1fr}.full{grid-column:auto}.metrics{grid-template-columns:1fr 1fr}}
-</style></head><body><main class="app">
-<header class="top"><div class="brand"><div class="logo">CT</div><div><h1>CutTrack</h1><div class="muted">Personal Fitness & Nutrition</div></div></div><div class="pill" id="pill">👤 Guest</div></header>
-<nav class="tabs"><button class="tab active" data-p="day">My Day</button><button class="tab" data-p="profile">Profile</button><button class="tab" data-p="nutrition">Nutrition</button><button class="tab" data-p="training">Training</button><button class="tab" data-p="progress">Progress</button><button class="tab" data-p="scan">AI Food Scanner</button></nav>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <title>CutTrack</title>
 
-<section id="day" class="page active"><div class="hero"><h2 id="hello">Selamat datang 👋</h2><p>Ringkasan aktivitas dan target hari ini.</p></div><div class="grid"><div class="card"><h3>🔥 Nutrition</h3><div class="metrics"><div class="metric"><b id="dcal">0/—</b><span>kcal</span></div><div class="metric"><b id="dpro">0%</b><span>protein</span></div><div class="metric"><b id="dwater">0%</b><span>air</span></div></div></div><div class="card"><h3>🏋️ Workout</h3><div class="metrics"><div class="metric"><b id="dex">0/6</b><span>exercise</span></div><div class="metric"><b id="dc">0</b><span>cardio min</span></div><div class="metric"><b id="dover">0%</b><span>completion</span></div></div></div></div><div class="card"><h3>📋 Today's Checklist</h3><div id="daylist"></div></div></section>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<section id="profile" class="page"><div class="hero"><h2>👤 Personal Profile</h2><p>Data profil menjadi dasar BMI, target nutrisi, dan training profile.</p></div><div class="card"><div class="form">
-<div class="field"><label>Nama</label><input id="name"></div><div class="field"><label>Jenis kelamin</label><select id="sex"><option value="m">Laki-laki</option><option value="f">Perempuan</option></select></div>
-<div class="field"><label>Usia</label><input id="age" type="number"></div><div class="field"><label>Tinggi (cm)</label><input id="height" type="number"></div><div class="field"><label>Berat (kg)</label><input id="weight" type="number"></div><div class="field"><label>Target berat (kg)</label><input id="target" type="number"></div>
-<div class="field"><label>Goal</label><select id="goal"><option>Fat Loss</option><option>Muscle Gain</option><option>Maintain</option><option>Strength</option><option>General Fitness</option></select></div>
-<div class="field"><label>Aktivitas</label><select id="activity"><option value="1.2">Sedentary</option><option value="1.375">Light</option><option value="1.55">Moderate</option><option value="1.725">High</option></select></div>
-<div class="field"><label>Level latihan</label><select id="level"><option>Pemula</option><option>Menengah</option><option>Lanjut</option></select></div><div class="field"><label>Hari/minggu</label><select id="days"><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select></div>
-<div class="field"><label>Durasi</label><select id="duration"><option>20 menit</option><option>30 menit</option><option selected>45 menit</option><option>60 menit</option><option>90 menit</option></select></div><div class="field"><label>Equipment</label><select id="equipment"><option>Gym lengkap</option><option>Home gym</option><option>Dumbbell</option><option>Resistance band</option><option>Bodyweight</option></select></div>
-<div class="full"><button class="btn primary" onclick="saveProfile()">Simpan Profil & Hitung</button></div></div></div><div id="presult" class="grid hide"><div class="card"><h3>🧮 BMI</h3><div style="font-size:42px;font-weight:900" id="bmi">—</div><b id="bmicat">—</b><p class="muted" id="ideal">—</p></div><div class="card"><h3>🎯 Target</h3><div class="metrics"><div class="metric"><b id="calTarget">—</b><span>kcal</span></div><div class="metric"><b id="proTarget">—</b><span>protein</span></div><div class="metric"><b id="targetShow">—</b><span>target kg</span></div></div></div></div></section>
+    body {
+      margin: 0;
+      background: #f5f7fa;
+      color: #111827;
+      font-family: Arial, sans-serif;
+    }
 
-<section id="nutrition" class="page"><div class="hero"><h2>🍽️ Nutrition Tracker</h2><p>Manual input, cairan, dan hasil AI Food Scanner tersimpan di hari ini.</p></div><div class="grid"><div class="card"><h3>Target & progress</h3><div class="metrics"><div class="metric"><b id="ncal">—</b><span>kcal</span></div><div class="metric"><b id="npro">—</b><span>protein</span></div><div class="metric"><b id="nwater">0</b><span>ml air</span></div></div><div class="barrow"><span>Protein</span><div class="bar"><i id="bp"></i></div><b id="pp">0%</b></div><div class="barrow"><span>Karbo</span><div class="bar"><i id="bc"></i></div><b id="cp">0%</b></div><div class="barrow"><span>Lemak</span><div class="bar"><i id="bf"></i></div><b id="fp">0%</b></div><div class="barrow"><span>Air</span><div class="bar"><i id="bw"></i></div><b id="wp">0%</b></div></div><div class="card"><h3>💧 Cairan</h3><div class="form"><div class="field"><label>Jenis</label><select id="drink"><option>Air putih</option><option>Kopi</option><option>Teh</option><option>Susu</option><option>Jus</option><option>Minuman lain</option></select></div><div class="field"><label>Jumlah ml</label><input id="ml" type="number"></div><div><button class="btn primary" onclick="addDrink()">Tambah</button></div></div><div id="drinks" class="muted" style="margin-top:10px"></div></div></div>
-<div class="card"><h3>➕ Input makanan manual</h3><div class="form"><div class="field"><label>Nama</label><input id="fn"></div><div class="field"><label>Kalori</label><input id="fc" type="number"></div><div class="field"><label>Protein g</label><input id="fpv" type="number"></div><div class="field"><label>Karbo g</label><input id="fcarb" type="number"></div><div class="field"><label>Lemak g</label><input id="ffat" type="number"></div><div><button class="btn primary" onclick="addFood()">Simpan</button></div></div></div><div class="card"><h3>🍽️ Makanan hari ini</h3><div id="foods" class="muted">Belum ada.</div></div></section>
+    .app {
+      max-width: 1050px;
+      margin: auto;
+      padding: 14px;
+    }
 
-<section id="training" class="page"><div class="hero"><h2>🏋️ Training Center</h2><p>Program menyesuaikan goal, level, equipment, frekuensi, dan durasi.</p></div><div class="card"><h3 id="ttitle">Buat profil terlebih dahulu</h3><div id="exercises"></div></div><div class="card"><h3>🏃 Cardio</h3><div class="row"><div><b>Cardio hari ini</b><div class="muted">20 menit · intensitas sedang</div></div><input id="cardio" class="check" type="checkbox" onchange="state.cardio=this.checked;refresh()"></div></div><div class="card"><h3>📝 Hasil latihan</h3><textarea id="wnote" style="width:100%;min-height:80px;border:1px solid #d1d5db;border-radius:10px;padding:9px" placeholder="Catatan beban, repetisi, rasa latihan..."></textarea><br><br><button class="btn primary" onclick="saveNote()">Simpan progress</button></div></section>
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
 
-<section id="progress" class="page"><div class="hero"><h2>📈 Progress</h2><p>Ringkasan progress harian dan riwayat.</p></div><div class="grid"><div class="card"><h3>Daily Completion</h3><div style="font-size:42px;font-weight:900" id="score">0%</div></div><div class="card"><h3>Workout</h3><div class="metrics"><div class="metric"><b id="pex">0</b><span>exercise</span></div><div class="metric"><b id="pcardio">0</b><span>cardio min</span></div><div class="metric"><b id="pmin">0</b><span>minutes</span></div></div></div></div><div class="card"><h3>🧠 Adaptive Coach</h3><div class="note">Versi final dapat menyesuaikan latihan berikutnya berdasarkan data yang benar-benar tersimpan: completion, beban/repetisi, cardio, nutrisi, dan tren berat. Hasil AI tetap berupa rekomendasi, bukan diagnosis medis.</div></div><div class="card"><h3>📅 Riwayat sesi</h3><div id="history" class="muted">Belum ada sesi tersimpan.</div></div></section>
+    .brand {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
 
-<section id="scan" class="page"><div class="hero"><h2>📸 AI Food Scanner</h2><p>Foto → analisis AI → review → simpan ke Nutrition Tracker.</p></div><div class="card"><div class="scanner"><div style="font-size:44px">🍱</div><input id="photo" type="file" accept="image/*" capture="environment"><p class="muted">Gunakan foto makanan yang jelas. Estimasi porsi/nutrisi dapat dikoreksi sebelum disimpan.</p><button class="btn primary" onclick="scanFood()">Analisis Foto</button><div id="scanStatus" class="muted" style="margin-top:10px"></div></div><div id="scanResult" class="result hide"></div></div></section>
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: #111827;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+    }
+
+    .brand h1 {
+      margin: 0;
+    }
+
+    .muted {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .pill {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 9px 11px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      margin-bottom: 12px;
+    }
+
+    .tab,
+    .btn {
+      border: 0;
+      border-radius: 11px;
+      padding: 10px 12px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .tab {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      white-space: nowrap;
+    }
+
+    .tab.active,
+    .primary {
+      background: #111827;
+      color: #fff;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .hero {
+      background: #111827;
+      color: #fff;
+      border-radius: 20px;
+      padding: 22px;
+      margin-bottom: 12px;
+    }
+
+    .hero h2 {
+      margin: 0 0 6px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 17px;
+      padding: 15px;
+      margin-bottom: 12px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .metric {
+      background: #f3f4f6;
+      border-radius: 12px;
+      padding: 11px;
+      text-align: center;
+    }
+
+    .metric b {
+      display: block;
+      font-size: 18px;
+    }
+
+    .metric span {
+      font-size: 10px;
+      color: #6b7280;
+    }
+
+    .form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .bar {
+      height: 9px;
+      background: #edf0f4;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .bar i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: #111827;
+    }
+
+    .barrow {
+      display: grid;
+      grid-template-columns: 80px 1fr 40px;
+      gap: 7px;
+      align-items: center;
+      margin: 9px 0;
+      font-size: 11px;
+    }
+
+    .scanner {
+      text-align: center;
+      border: 2px dashed #d1d5db;
+      border-radius: 14px;
+      padding: 25px;
+    }
+
+    .result {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 12px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      padding: 11px 0;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .row:first-child {
+      border-top: 0;
+    }
+
+    .check {
+      width: 20px;
+      height: 20px;
+    }
+
+    .exercise {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 11px;
+      margin: 7px 0;
+    }
+
+    .exercise small {
+      display: block;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    .note {
+      font-size: 11px;
+      background: #fffbeb;
+      color: #92400e;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .hide {
+      display: none !important;
+    }
+
+    textarea {
+      font-family: Arial, sans-serif;
+      resize: vertical;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 700px) {
+      .grid,
+      .form {
+        grid-template-columns: 1fr;
+      }
+
+      .full {
+        grid-column: auto;
+      }
+
+      .metrics {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<main class="app">
+
+  <!-- HEADER -->
+  <header class="top">
+    <div class="brand">
+      <div class="logo">CT</div>
+
+      <div>
+        <h1>CutTrack</h1>
+        <div class="muted">Personal Fitness & Nutrition</div>
+      </div>
+    </div>
+
+    <div class="pill" id="pill">👤 Guest</div>
+  </header>
+
+
+  <!-- NAVIGATION -->
+  <nav class="tabs">
+
+    <button class="tab active" data-page="day">
+      My Day
+    </button>
+
+    <button class="tab" data-page="profile">
+      Profile
+    </button>
+
+    <button class="tab" data-page="nutrition">
+      Nutrition
+    </button>
+
+    <button class="tab" data-page="training">
+      Training
+    </button>
+
+    <button class="tab" data-page="progress">
+      Progress
+    </button>
+
+    <button class="tab" data-page="scan">
+      AI Food Scanner
+    </button>
+
+  </nav>
+
+
+  <!-- ================= MY DAY ================= -->
+
+  <section id="day" class="page active">
+
+    <div class="hero">
+      <h2 id="hello">Selamat datang 👋</h2>
+      <p>Ringkasan aktivitas dan target hari ini.</p>
+    </div>
+
+
+    <div class="grid">
+
+      <div class="card">
+
+        <h3>🔥 Nutrition</h3>
+
+        <div class="metrics">
+
+          <div class="metric">
+            <b id="dcal">0/—</b>
+            <span>kcal</span>
+          </div>
+
+          <div class="metric">
+            <b id="dpro">0%</b>
+            <span>protein</span>
+          </div>
+
+          <div class="metric">
+            <b id="dwater">0%</b>
+            <span>air</span>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>🏋️ Workout</h3>
+
+        <div class="metrics">
+
+          <div class="metric">
+            <b id="dex">0/6</b>
+            <span>exercise</span>
+          </div>
+
+          <div class="metric">
+            <b id="dc">0</b>
+            <span>cardio min</span>
+          </div>
+
+          <div class="metric">
+            <b id="dover">0%</b>
+            <span>completion</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>📋 Today's Checklist</h3>
+
+      <div id="daylist"></div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= PROFILE ================= -->
+
+  <section id="profile" class="page">
+
+    <div class="hero">
+      <h2>👤 Personal Profile</h2>
+      <p>
+        Data profil menjadi dasar BMI, target nutrisi,
+        dan training profile.
+      </p>
+    </div>
+
+
+    <div class="card">
+
+      <div class="form">
+
+        <div class="field">
+          <label>Nama</label>
+          <input id="name">
+        </div>
+
+
+        <div class="field">
+          <label>Jenis kelamin</label>
+
+          <select id="sex">
+            <option value="m">Laki-laki</option>
+            <option value="f">Perempuan</option>
+          </select>
+        </div>
+
+
+        <div class="field">
+          <label>Usia</label>
+          <input id="age" type="number">
+        </div>
+
+
+        <div class="field">
+          <label>Tinggi (cm)</label>
+          <input id="height" type="number">
+        </div>
+
+
+        <div class="field">
+          <label>Berat (kg)</label>
+          <input id="weight" type="number">
+        </div>
+
+
+        <div class="field">
+          <label>Target berat (kg)</label>
+          <input id="target" type="number">
+        </div>
+
+
+        <div class="field">
+          <label>Goal</label>
+
+          <select id="goal">
+            <option>Fat Loss</option>
+            <option>Muscle Gain</option>
+            <option>Maintain</option>
+            <option>Strength</option>
+            <option>General Fitness</option>
+          </select>
+
+        </div>
+
+
+        <div class="field">
+          <label>Aktivitas</label>
+
+          <select id="activity">
+            <option value="1.2">Sedentary</option>
+            <option value="1.375">Light</option>
+            <option value="1.55">Moderate</option>
+            <option value="1.725">High</option>
+          </select>
+
+        </div>
+
+
+        <div class="field">
+          <label>Level latihan</label>
+
+          <select id="level">
+            <option>Pemula</option>
+            <option>Menengah</option>
+            <option>Lanjut</option>
+          </select>
+
+        </div>
+
+
+        <div class="field">
+          <label>Hari/minggu</label>
+
+          <select id="days">
+            <option>2</option>
+            <option selected>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+          </select>
+
+        </div>
+
+
+        <div class="field">
+          <label>Durasi</label>
+
+          <select id="duration">
+            <option>20 menit</option>
+            <option>30 menit</option>
+            <option selected>45 menit</option>
+            <option>60 menit</option>
+            <option>90 menit</option>
+          </select>
+
+        </div>
+
+
+        <div class="field">
+          <label>Equipment</label>
+
+          <select id="equipment">
+            <option>Gym lengkap</option>
+            <option>Home gym</option>
+            <option>Dumbbell</option>
+            <option>Resistance band</option>
+            <option>Bodyweight</option>
+          </select>
+
+        </div>
+
+
+        <div class="full">
+
+          <button
+            class="btn primary"
+            id="saveProfileBtn"
+          >
+            Simpan Profil & Hitung
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div id="presult" class="grid hide">
+
+      <div class="card">
+
+        <h3>🧮 BMI</h3>
+
+        <div
+          style="font-size:42px;font-weight:900"
+          id="bmi"
+        >
+          —
+        </div>
+
+        <b id="bmicat">—</b>
+
+        <p
+          class="muted"
+          id="ideal"
+        >
+          —
+        </p>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>🎯 Target</h3>
+
+        <div class="metrics">
+
+          <div class="metric">
+            <b id="calTarget">—</b>
+            <span>kcal</span>
+          </div>
+
+          <div class="metric">
+            <b id="proTarget">—</b>
+            <span>protein</span>
+          </div>
+
+          <div class="metric">
+            <b id="targetShow">—</b>
+            <span>target kg</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= NUTRITION ================= -->
+
+  <section id="nutrition" class="page">
+
+    <div class="hero">
+      <h2>🍽️ Nutrition Tracker</h2>
+      <p>
+        Manual input, cairan, dan hasil AI Food Scanner
+        tersimpan di hari ini.
+      </p>
+    </div>
+
+
+    <div class="grid">
+
+      <div class="card">
+
+        <h3>Target & progress</h3>
+
+        <div class="metrics">
+
+          <div class="metric">
+            <b id="ncal">—</b>
+            <span>kcal</span>
+          </div>
+
+          <div class="metric">
+            <b id="npro">—</b>
+            <span>protein</span>
+          </div>
+
+          <div class="metric">
+            <b id="nwater">0</b>
+            <span>ml air</span>
+          </div>
+
+        </div>
+
+
+        <div class="barrow">
+          <span>Protein</span>
+
+          <div class="bar">
+            <i id="bp"></i>
+          </div>
+
+          <b id="pp">0%</b>
+        </div>
+
+
+        <div class="barrow">
+          <span>Karbo</span>
+
+          <div class="bar">
+            <i id="bc"></i>
+          </div>
+
+          <b id="cp">0%</b>
+        </div>
+
+
+        <div class="barrow">
+          <span>Lemak</span>
+
+          <div class="bar">
+            <i id="bf"></i>
+          </div>
+
+          <b id="fp">0%</b>
+        </div>
+
+
+        <div class="barrow">
+          <span>Air</span>
+
+          <div class="bar">
+            <i id="bw"></i>
+          </div>
+
+          <b id="wp">0%</b>
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>💧 Cairan</h3>
+
+        <div class="form">
+
+          <div class="field">
+            <label>Jenis</label>
+
+            <select id="drink">
+              <option>Air putih</option>
+              <option>Kopi</option>
+              <option>Teh</option>
+              <option>Susu</option>
+              <option>Jus</option>
+              <option>Minuman lain</option>
+            </select>
+
+          </div>
+
+
+          <div class="field">
+            <label>Jumlah ml</label>
+
+            <input
+              id="ml"
+              type="number"
+            >
+
+          </div>
+
+
+          <div>
+
+            <button
+              class="btn primary"
+              id="addDrinkBtn"
+            >
+              Tambah
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div
+          id="drinks"
+          class="muted"
+          style="margin-top:10px"
+        >
+          Belum ada.
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>➕ Input makanan manual</h3>
+
+      <div class="form">
+
+        <div class="field">
+          <label>Nama</label>
+          <input id="fn">
+        </div>
+
+
+        <div class="field">
+          <label>Kalori</label>
+          <input id="fc" type="number">
+        </div>
+
+
+        <div class="field">
+          <label>Protein g</label>
+          <input id="fpv" type="number">
+        </div>
+
+
+        <div class="field">
+          <label>Karbo g</label>
+          <input id="fcarb" type="number">
+        </div>
+
+
+        <div class="field">
+          <label>Lemak g</label>
+          <input id="ffat" type="number">
+        </div>
+
+
+        <div>
+
+          <button
+            class="btn primary"
+            id="addFoodBtn"
+          >
+            Simpan
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>🍽️ Makanan hari ini</h3>
+
+      <div
+        id="foods"
+        class="muted"
+      >
+        Belum ada.
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= TRAINING ================= -->
+
+  <section id="training" class="page">
+
+    <div class="hero">
+      <h2>🏋️ Training Center</h2>
+
+      <p>
+        Program menyesuaikan goal, level,
+        equipment, frekuensi, dan durasi.
+      </p>
+    </div>
+
+
+    <div class="card">
+
+      <h3 id="ttitle">
+        Buat profil terlebih dahulu
+      </h3>
+
+      <div id="exercises"></div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>🏃 Cardio</h3>
+
+      <div class="row">
+
+        <div>
+
+          <b>Cardio hari ini</b>
+
+          <div class="muted">
+            20 menit · intensitas sedang
+          </div>
+
+        </div>
+
+        <input
+          id="cardio"
+          class="check"
+          type="checkbox"
+        >
+
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>📝 Hasil latihan</h3>
+
+      <textarea
+        id="wnote"
+        style="width:100%;min-height:80px;border:1px solid #d1d5db;border-radius:10px;padding:9px"
+        placeholder="Catatan beban, repetisi, rasa latihan..."
+      ></textarea>
+
+      <br>
+      <br>
+
+      <button
+        class="btn primary"
+        id="saveNoteBtn"
+      >
+        Simpan progress
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= PROGRESS ================= -->
+
+  <section id="progress" class="page">
+
+    <div class="hero">
+
+      <h2>📈 Progress</h2>
+
+      <p>
+        Ringkasan progress harian dan riwayat.
+      </p>
+
+    </div>
+
+
+    <div class="grid">
+
+      <div class="card">
+
+        <h3>Daily Completion</h3>
+
+        <div
+          style="font-size:42px;font-weight:900"
+          id="score"
+        >
+          0%
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>Workout</h3>
+
+        <div class="metrics">
+
+          <div class="metric">
+            <b id="pex">0</b>
+            <span>exercise</span>
+          </div>
+
+          <div class="metric">
+            <b id="pcardio">0</b>
+            <span>cardio min</span>
+          </div>
+
+          <div class="metric">
+            <b id="pmin">0</b>
+            <span>minutes</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>🧠 Adaptive Coach</h3>
+
+      <div class="note">
+
+        Versi final dapat menyesuaikan latihan
+        berikutnya berdasarkan data yang benar-benar
+        tersimpan: completion, beban/repetisi,
+        cardio, nutrisi, dan tren berat.
+
+        <br><br>
+
+        Hasil AI tetap berupa rekomendasi,
+        bukan diagnosis medis.
+
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>📅 Riwayat sesi</h3>
+
+      <div
+        id="history"
+        class="muted"
+      >
+        Belum ada sesi tersimpan.
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= AI FOOD SCANNER ================= -->
+
+  <section id="scan" class="page">
+
+    <div class="hero">
+
+      <h2>📸 AI Food Scanner</h2>
+
+      <p>
+        Foto → analisis AI → review →
+        simpan ke Nutrition Tracker.
+      </p>
+
+    </div>
+
+
+    <div class="card">
+
+      <div class="scanner">
+
+        <div style="font-size:44px">
+          🍱
+        </div>
+
+
+        <input
+          id="photo"
+          type="file"
+          accept="image/*"
+          capture="environment"
+        >
+
+
+        <p class="muted">
+          Gunakan foto makanan yang jelas.
+          Estimasi porsi/nutrisi dapat dikoreksi
+          sebelum disimpan.
+        </p>
+
+
+        <button
+          class="btn primary"
+          id="scanBtn"
+        >
+          Analisis Foto
+        </button>
+
+
+        <div
+          id="scanStatus"
+          class="muted"
+          style="margin-top:10px"
+        ></div>
+
+      </div>
+
+
+      <div
+        id="scanResult"
+        class="result hide"
+      ></div>
+
+    </div>
+
+  </section>
+
 </main>
+
+
 <script>
-const state=JSON.parse(localStorage.getItem('cuttrack')||'{"profile":null,"foods":[],"drinks":[],"exercise":[false,false,false,false,false,false],"cardio":false,"history":[]}');
-const save=()=>localStorage.setItem('cuttrack',JSON.stringify(state));
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>openPage(b.dataset.p));
-function openPage(p){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.p===p));document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===p));refresh()}
-function saveProfile(){const h=+height.value,w=+weight.value,a=+age.value,t=+target.value;if(!h||!w||!a)return alert('Isi usia, tinggi, dan berat.');const bmi=w/(h/100)**2,bmic=bmi<18.5?'Underweight':bmi<25?'Normal':bmi<30?'Overweight':'Obesity',bmr=10*w+6.25*h-5*a+(sex.value==='m'?5:-161),tdee=bmr*+activity.value;let cal=tdee;if(goal.value==='Fat Loss')cal=Math.max(1200,tdee-500);if(goal.value==='Muscle Gain')cal=tdee+250;state.profile={name:name.value||'Pengguna',sex:sex.value,age:a,height:h,weight:w,target:t,goal:goal.value,level:level.value,days:+days.value,duration:duration.value,equipment:equipment.value,cal:Math.round(cal),pro:Math.round(1.6*(t||w)),bmi};state.exercise=[false,false,false,false,false,false];state.cardio=false;save();presult.classList.remove('hide');bmiEl();refresh()}
-function bmiEl(){bmi.textContent=state.profile.bmi.toFixed(1);bmicat.textContent=state.profile.bmi<18.5?'Underweight':state.profile.bmi<25?'Normal':state.profile.bmi<30?'Overweight':'Obesity';const h=state.profile.height/100;ideal.textContent='Rentang BMI 18,5–24,9: '+(18.5*h*h).toFixed(1)+' – '+(24.9*h*h).toFixed(1)+' kg';calTarget.textContent=state.profile.cal;proTarget.textContent=state.profile.pro+' g';targetShow.textContent=state.profile.target+' kg'}
-function names(){const g=state.profile?.goal;if(g==='Fat Loss')return ['Goblet Squat','Push Up','Lat Pulldown','Romanian Deadlift','Shoulder Press','Core'];if(g==='Muscle Gain')return ['Squat','Bench Press','Lat Pulldown','Romanian Deadlift','Shoulder Press','Biceps Curl'];if(g==='Strength')return ['Squat','Bench Press','Deadlift','Overhead Press','Row','Core'];return ['Squat','Push Up','Row','Lunge','Shoulder Press','Core']}
-function renderTraining(){if(!state.profile){ttitle.textContent='Buat profil terlebih dahulu';exercises.innerHTML='';return}ttitle.textContent=state.profile.goal+' · '+state.profile.level+' · '+state.profile.days+'x/minggu';exercises.innerHTML=names().map((n,i)=>`<div class="exercise"><div class="row" style="border:0;padding:0"><div><b>${n}</b><small>3 set · 8–12 reps · ${state.profile.equipment}</small></div><input class="check" type="checkbox" ${state.exercise[i]?'checked':''} onchange="state.exercise[${i}]=this.checked;save();refresh()"></div></div>`).join('')}
-function addFood(){const c=+fc.value||0;if(!c)return alert('Isi kalori.');state.foods.push({n:fn.value||'Makanan',c,p:+fpv.value||0,carb:+fcarb.value||0,f:+ffat.value||0});[fn,fc,fpv,fcarb,ffat].forEach(x=>x.value='');save();refresh()}
-function addDrink(){const x=+ml.value||0;if(!x)return alert('Isi ml.');state.drinks.push({type:drink.value,ml:x});ml.value='';save();refresh()}
-function saveNote(){state.history.unshift({date:new Date().toLocaleString('id-ID'),exercise:state.exercise.filter(Boolean).length,cardio:state.cardio,note:wnote.value});save();refresh();alert('Progress latihan disimpan.')}
-async function scanFood(){const f=photo.files[0];if(!f)return alert('Pilih foto makanan.');scanStatus.textContent='Menganalisis foto...';const reader=new FileReader();reader.onload=async()=>{try{const r=await fetch('/api/food-scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:reader.result})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Gagal menganalisis');scanResult.classList.remove('hide');scanResult.innerHTML='<b>Hasil AI (estimasi)</b>'+d.items.map(x=>`<div class="row"><div><b>${x.name}</b><div class="muted">±${x.portion_g||'?'} g · ${x.calories_kcal||'?'} kcal · P ${x.protein_g||'?'}g · K ${x.carbs_g||'?'}g · L ${x.fat_g||'?'}g</div></div></div>`).join('')+`<p class="muted">${d.notes||''}</p><button class="btn primary" onclick='saveAI(${JSON.stringify(d.total)})'>Simpan ke Tracker</button>`;scanStatus.textContent='Selesai. Periksa hasil sebelum menyimpan.'}catch(e){scanStatus.textContent='Error: '+e.message}}};reader.readAsDataURL(f)}
-function saveAI(t){state.foods.push({n:'AI Food Scan',c:+t.calories_kcal||0,p:+t.protein_g||0,carb:+t.carbs_g||0,f:+t.fat_g||0});save();refresh();openPage('nutrition')}
-function refresh(){if(state.profile){pill.textContent='👤 '+state.profile.name;hello.textContent='Selamat datang, '+state.profile.name+' 👋';ncal.textContent=state.profile.cal;npro.textContent=state.profile.pro+' g'}const cal=state.foods.reduce((s,x)=>s+x.c,0),pro=state.foods.reduce((s,x)=>s+x.p,0),carb=state.foods.reduce((s,x)=>s+x.carb,0),fat=state.foods.reduce((s,x)=>s+x.f,0),water=state.drinks.reduce((s,x)=>s+x.ml,0),pp=Math.min(100,state.profile?pro/state.profile.pro*100:0),cp=Math.min(100,carb*4/(state.profile?.cal||2000)*100),fp=Math.min(100,fat*9/(state.profile?.cal||2000)*100),wp=Math.min(100,water/2500*100),done=state.exercise.filter(Boolean).length,work=Math.round(done/6*80+(state.cardio?20:0)),nutrition=Math.round((Math.min(100,state.profile?cal/state.profile.cal*100:0)+pp+wp)/3),score=Math.round((work+nutrition)/2);dcal.textContent=Math.round(cal)+'/'+(state.profile?.cal||'—');dpro.textContent=Math.round(pp)+'%';dwater.textContent=Math.round(wp)+'%';dex.textContent=done+'/6';dc.textContent=state.cardio?20:0;dover.textContent=score+'%';scoreEl=score;scoreEl2(score);nwater.textContent=water;[['bp',pp,'pp'],['bc',cp,'cp'],['bf',fp,'fp'],['bw',wp,'wp']].forEach(x=>{document.getElementById(x[0]).style.width=x[1]+'%';document.getElementById(x[2]).textContent=Math.round(x[1])+'%'});foods.innerHTML=state.foods.length?state.foods.map(x=>`<div class="row"><div><b>${x.n}</b><div class="muted">${x.c} kcal · P ${x.p}g · K ${x.carb}g · L ${x.f}g</div></div></div>`).join(''):'Belum ada.';drinks.innerHTML=state.drinks.length?state.drinks.map(x=>x.type+' — '+x.ml+' ml').join('<br>'):'Belum ada.';daylist.innerHTML=`<div class="row"><span>🍽️ Nutrition</span><b>${nutrition}%</b></div><div class="row"><span>🏋️ Strength</span><b>${done}/6</b></div><div class="row"><span>🏃 Cardio</span><b>${state.cardio?'✓ 20 min':'—'}</b></div>`;document.getElementById('score').textContent=score+'%';pex.textContent=done;pcardio.textContent=state.cardio?20:0;pmin.textContent=(done*8)+(state.cardio?20:0);history.innerHTML=state.history.length?state.history.map(x=>`<div class="row"><div><b>${x.date}</b><div class="muted">${x.exercise} exercise · ${x.cardio?'20 min cardio':'tanpa cardio'}${x.note?' · '+x.note:''}</div></div></div>`).join(''):'Belum ada sesi tersimpan.';renderTraining();if(state.profile){document.getElementById('presult').classList.remove('hide');bmiEl()}}
-function scoreEl2(x){document.getElementById('score').textContent=x+'%'}
+
+/* =========================================================
+   CUTTRACK
+   Main Application
+   ========================================================= */
+
+
+/* =========================
+   DEFAULT STATE
+   ========================= */
+
+const defaultState = {
+  profile: null,
+  foods: [],
+  drinks: [],
+  exercise: [false, false, false, false, false, false],
+  cardio: false,
+  history: []
+};
+
+
+/* =========================
+   LOAD STATE
+   ========================= */
+
+let state;
+
+try {
+
+  const saved = localStorage.getItem("cuttrack");
+
+  state = saved
+    ? JSON.parse(saved)
+    : structuredClone(defaultState);
+
+} catch (error) {
+
+  console.error("Gagal membaca data:", error);
+
+  state = structuredClone(defaultState);
+}
+
+
+/* Pastikan data lama yang tidak lengkap
+   tidak menyebabkan aplikasi rusak */
+
+state.profile = state.profile || null;
+state.foods = Array.isArray(state.foods) ? state.foods : [];
+state.drinks = Array.isArray(state.drinks) ? state.drinks : [];
+state.exercise = Array.isArray(state.exercise)
+  ? state.exercise
+  : [false, false, false, false, false, false];
+
+while (state.exercise.length < 6) {
+  state.exercise.push(false);
+}
+
+state.cardio = Boolean(state.cardio);
+state.history = Array.isArray(state.history)
+  ? state.history
+  : [];
+
+
+/* =========================
+   SAVE STATE
+   ========================= */
+
+function save() {
+
+  localStorage.setItem(
+    "cuttrack",
+    JSON.stringify(state)
+  );
+
+}
+
+
+/* =========================
+   DOM ELEMENTS
+   ========================= */
+
+const pill = document.getElementById("pill");
+const hello = document.getElementById("hello");
+
+const dcal = document.getElementById("dcal");
+const dpro = document.getElementById("dpro");
+const dwater = document.getElementById("dwater");
+
+const dex = document.getElementById("dex");
+const dc = document.getElementById("dc");
+const dover = document.getElementById("dover");
+
+const daylist = document.getElementById("daylist");
+
+const nameInput = document.getElementById("name");
+const sexInput = document.getElementById("sex");
+const ageInput = document.getElementById("age");
+const heightInput = document.getElementById("height");
+const weightInput = document.getElementById("weight");
+const targetInput = document.getElementById("target");
+const goalInput = document.getElementById("goal");
+const activityInput = document.getElementById("activity");
+const levelInput = document.getElementById("level");
+const daysInput = document.getElementById("days");
+const durationInput = document.getElementById("duration");
+const equipmentInput = document.getElementById("equipment");
+
+const presult = document.getElementById("presult");
+const bmi = document.getElementById("bmi");
+const bmicat = document.getElementById("bmicat");
+const ideal = document.getElementById("ideal");
+const calTarget = document.getElementById("calTarget");
+const proTarget = document.getElementById("proTarget");
+const targetShow = document.getElementById("targetShow");
+
+const ncal = document.getElementById("ncal");
+const npro = document.getElementById("npro");
+const nwater = document.getElementById("nwater");
+
+const bp = document.getElementById("bp");
+const bc = document.getElementById("bc");
+const bf = document.getElementById("bf");
+const bw = document.getElementById("bw");
+
+const pp = document.getElementById("pp");
+const cp = document.getElementById("cp");
+const fp = document.getElementById("fp");
+const wp = document.getElementById("wp");
+
+const drinkInput = document.getElementById("drink");
+const mlInput = document.getElementById("ml");
+const drinks = document.getElementById("drinks");
+
+const fn = document.getElementById("fn");
+const fc = document.getElementById("fc");
+const fpv = document.getElementById("fpv");
+const fcarb = document.getElementById("fcarb");
+const ffat = document.getElementById("ffat");
+const foods = document.getElementById("foods");
+
+const ttitle = document.getElementById("ttitle");
+const exercises = document.getElementById("exercises");
+const cardio = document.getElementById("cardio");
+const wnote = document.getElementById("wnote");
+
+const score = document.getElementById("score");
+const pex = document.getElementById("pex");
+const pcardio = document.getElementById("pcardio");
+const pmin = document.getElementById("pmin");
+const history = document.getElementById("history");
+
+const photo = document.getElementById("photo");
+const scanBtn = document.getElementById("scanBtn");
+const scanStatus = document.getElementById("scanStatus");
+const scanResult = document.getElementById("scanResult");
+
+
+/* =========================
+   NAVIGATION
+   ========================= */
+
+document
+  .querySelectorAll(".tab")
+  .forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      openPage(button.dataset.page);
+
+    });
+
+  });
+
+
+function openPage(page) {
+
+  document
+    .querySelectorAll(".tab")
+    .forEach(button => {
+
+      button.classList.toggle(
+        "active",
+        button.dataset.page === page
+      );
+
+    });
+
+
+  document
+    .querySelectorAll(".page")
+    .forEach(section => {
+
+      section.classList.toggle(
+        "active",
+        section.id === page
+      );
+
+    });
+
+
+  refresh();
+
+}
+
+
+/* =========================
+   PROFILE
+   ========================= */
+
+document
+  .getElementById("saveProfileBtn")
+  .addEventListener("click", saveProfile);
+
+
+function saveProfile() {
+
+  const h = Number(heightInput.value);
+  const w = Number(weightInput.value);
+  const a = Number(ageInput.value);
+  const t = Number(targetInput.value);
+
+  if (!h || !w || !a) {
+
+    alert(
+      "Isi usia, tinggi, dan berat terlebih dahulu."
+    );
+
+    return;
+  }
+
+
+  const bmiValue =
+    w / Math.pow(h / 100, 2);
+
+
+  let bmiCategory;
+
+  if (bmiValue < 18.5) {
+
+    bmiCategory = "Underweight";
+
+  } else if (bmiValue < 25) {
+
+    bmiCategory = "Normal";
+
+  } else if (bmiValue < 30) {
+
+    bmiCategory = "Overweight";
+
+  } else {
+
+    bmiCategory = "Obesity";
+
+  }
+
+
+  const bmr =
+    10 * w +
+    6.25 * h -
+    5 * a +
+    (sexInput.value === "m" ? 5 : -161);
+
+
+  const tdee =
+    bmr * Number(activityInput.value);
+
+
+  let calories = tdee;
+
+
+  if (goalInput.value === "Fat Loss") {
+
+    calories = Math.max(
+      1200,
+      tdee - 500
+    );
+
+  }
+
+
+  if (goalInput.value === "Muscle Gain") {
+
+    calories = tdee + 250;
+
+  }
+
+
+  if (goalInput.value === "Maintain") {
+
+    calories = tdee;
+
+  }
+
+
+  state.profile = {
+
+    name:
+      nameInput.value.trim() ||
+      "Pengguna",
+
+    sex:
+      sexInput.value,
+
+    age:
+      a,
+
+    height:
+      h,
+
+    weight:
+      w,
+
+    target:
+      t || w,
+
+    goal:
+      goalInput.value,
+
+    level:
+      levelInput.value,
+
+    days:
+      Number(daysInput.value),
+
+    duration:
+      durationInput.value,
+
+    equipment:
+      equipmentInput.value,
+
+    cal:
+      Math.round(calories),
+
+    pro:
+      Math.round(
+        1.6 * (t || w)
+      ),
+
+    bmi:
+      bmiValue
+
+  };
+
+
+  state.exercise = [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ];
+
+  state.cardio = false;
+
+
+  save();
+
+
+  presult.classList.remove("hide");
+
+
+  updateProfileDisplay();
+
+
+  refresh();
+
+
+  alert("Profil berhasil disimpan.");
+
+}
+
+
+/* =========================
+   PROFILE DISPLAY
+   ========================= */
+
+function updateProfileDisplay() {
+
+  if (!state.profile) {
+
+    presult.classList.add("hide");
+
+    return;
+  }
+
+
+  const profile = state.profile;
+
+
+  bmi.textContent =
+    Number(profile.bmi).toFixed(1);
+
+
+  let category;
+
+  if (profile.bmi < 18.5) {
+
+    category = "Underweight";
+
+  } else if (profile.bmi < 25) {
+
+    category = "Normal";
+
+  } else if (profile.bmi < 30) {
+
+    category = "Overweight";
+
+  } else {
+
+    category = "Obesity";
+
+  }
+
+
+  bmicat.textContent =
+    category;
+
+
+  const h =
+    profile.height / 100;
+
+
+  ideal.textContent =
+    "Rentang BMI 18,5–24,9: " +
+    (18.5 * h * h).toFixed(1) +
+    " – " +
+    (24.9 * h * h).toFixed(1) +
+    " kg";
+
+
+  calTarget.textContent =
+    profile.cal;
+
+
+  proTarget.textContent =
+    profile.pro + " g";
+
+
+  targetShow.textContent =
+    profile.target + " kg";
+
+
+  presult.classList.remove("hide");
+
+}
+
+
+/* =========================
+   TRAINING
+   ========================= */
+
+function getExerciseNames() {
+
+  const goal =
+    state.profile?.goal;
+
+
+  if (goal === "Fat Loss") {
+
+    return [
+      "Goblet Squat",
+      "Push Up",
+      "Lat Pulldown",
+      "Romanian Deadlift",
+      "Shoulder Press",
+      "Core"
+    ];
+
+  }
+
+
+  if (goal === "Muscle Gain") {
+
+    return [
+      "Squat",
+      "Bench Press",
+      "Lat Pulldown",
+      "Romanian Deadlift",
+      "Shoulder Press",
+      "Biceps Curl"
+    ];
+
+  }
+
+
+  if (goal === "Strength") {
+
+    return [
+      "Squat",
+      "Bench Press",
+      "Deadlift",
+      "Overhead Press",
+      "Row",
+      "Core"
+    ];
+
+  }
+
+
+  return [
+    "Squat",
+    "Push Up",
+    "Row",
+    "Lunge",
+    "Shoulder Press",
+    "Core"
+  ];
+
+}
+
+
+function renderTraining() {
+
+  if (!state.profile) {
+
+    ttitle.textContent =
+      "Buat profil terlebih dahulu";
+
+    exercises.innerHTML = "";
+
+    return;
+  }
+
+
+  ttitle.textContent =
+    state.profile.goal +
+    " · " +
+    state.profile.level +
+    " · " +
+    state.profile.days +
+    "x/minggu";
+
+
+  const names =
+    getExerciseNames();
+
+
+  exercises.innerHTML = "";
+
+
+  names.forEach((exerciseName, index) => {
+
+    const wrapper =
+      document.createElement("div");
+
+    wrapper.className =
+      "exercise";
+
+
+    const row =
+      document.createElement("div");
+
+    row.className =
+      "row";
+
+    row.style.border = "0";
+    row.style.padding = "0";
+
+
+    const text =
+      document.createElement("div");
+
+
+    const title =
+      document.createElement("b");
+
+    title.textContent =
+      exerciseName;
+
+
+    const small =
+      document.createElement("small");
+
+    small.textContent =
+      "3 set · 8–12 reps · " +
+      state.profile.equipment;
+
+
+    text.appendChild(title);
+    text.appendChild(small);
+
+
+    const checkbox =
+      document.createElement("input");
+
+    checkbox.type =
+      "checkbox";
+
+    checkbox.className =
+      "check";
+
+    checkbox.checked =
+      Boolean(state.exercise[index]);
+
+
+    checkbox.addEventListener(
+      "change",
+      () => {
+
+        state.exercise[index] =
+          checkbox.checked;
+
+        save();
+
+        refresh();
+
+      }
+    );
+
+
+    row.appendChild(text);
+    row.appendChild(checkbox);
+
+    wrapper.appendChild(row);
+
+    exercises.appendChild(wrapper);
+
+  });
+
+}
+
+
+/* =========================
+   FOOD
+   ========================= */
+
+document
+  .getElementById("addFoodBtn")
+  .addEventListener(
+    "click",
+    addFood
+  );
+
+
+function addFood() {
+
+  const calories =
+    Number(fc.value) || 0;
+
+
+  if (!calories) {
+
+    alert("Isi kalori.");
+
+    return;
+  }
+
+
+  state.foods.push({
+
+    n:
+      fn.value.trim() ||
+      "Makanan",
+
+    c:
+      calories,
+
+    p:
+      Number(fpv.value) || 0,
+
+    carb:
+      Number(fcarb.value) || 0,
+
+    f:
+      Number(ffat.value) || 0
+
+  });
+
+
+  fn.value = "";
+  fc.value = "";
+  fpv.value = "";
+  fcarb.value = "";
+  ffat.value = "";
+
+
+  save();
+
+  refresh();
+
+}
+
+
+/* =========================
+   DRINK
+   ========================= */
+
+document
+  .getElementById("addDrinkBtn")
+  .addEventListener(
+    "click",
+    addDrink
+  );
+
+
+function addDrink() {
+
+  const amount =
+    Number(mlInput.value) || 0;
+
+
+  if (!amount) {
+
+    alert("Isi jumlah ml.");
+
+    return;
+  }
+
+
+  state.drinks.push({
+
+    type:
+      drinkInput.value,
+
+    ml:
+      amount
+
+  });
+
+
+  mlInput.value = "";
+
+
+  save();
+
+  refresh();
+
+}
+
+
+/* =========================
+   TRAINING NOTE
+   ========================= */
+
+document
+  .getElementById("saveNoteBtn")
+  .addEventListener(
+    "click",
+    saveNote
+  );
+
+
+function saveNote() {
+
+  state.history.unshift({
+
+    date:
+      new Date()
+        .toLocaleString("id-ID"),
+
+    exercise:
+      state.exercise
+        .filter(Boolean)
+        .length,
+
+    cardio:
+      state.cardio,
+
+    note:
+      wnote.value.trim()
+
+  });
+
+
+  save();
+
+  refresh();
+
+
+  alert(
+    "Progress latihan disimpan."
+  );
+
+}
+
+
+/* =========================
+   CARDIO
+   ========================= */
+
+cardio.addEventListener(
+  "change",
+  () => {
+
+    state.cardio =
+      cardio.checked;
+
+    save();
+
+    refresh();
+
+  }
+);
+
+
+/* =========================
+   AI FOOD SCANNER
+   ========================= */
+
+scanBtn.addEventListener(
+  "click",
+  scanFood
+);
+
+
+async function scanFood() {
+
+  const file =
+    photo.files[0];
+
+
+  if (!file) {
+
+    alert(
+      "Pilih foto makanan terlebih dahulu."
+    );
+
+    return;
+  }
+
+
+  scanBtn.disabled = true;
+
+  scanStatus.textContent =
+    "Menganalisis foto...";
+
+
+  scanResult.classList.add(
+    "hide"
+  );
+
+
+  const reader =
+    new FileReader();
+
+
+  reader.onload = async () => {
+
+    try {
+
+      const response =
+        await fetch(
+          "/api/food-scan",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+
+            body: JSON.stringify({
+              image:
+                reader.result
+            })
+          }
+        );
+
+
+      const data =
+        await response.json();
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.error ||
+          "Gagal menganalisis makanan."
+        );
+
+      }
+
+
+      if (
+        !data.items ||
+        !Array.isArray(data.items)
+      ) {
+
+        throw new Error(
+          "Format hasil AI tidak sesuai."
+        );
+
+      }
+
+
+      renderScanResult(data);
+
+
+      scanStatus.textContent =
+        "Selesai. Periksa hasil sebelum menyimpan.";
+
+
+    } catch (error) {
+
+      console.error(
+        "Food Scanner Error:",
+        error
+      );
+
+
+      scanStatus.textContent =
+        "Error: " +
+        error.message;
+
+
+    } finally {
+
+      scanBtn.disabled = false;
+
+    }
+
+  };
+
+
+  reader.onerror = () => {
+
+    scanStatus.textContent =
+      "Gagal membaca foto.";
+
+    scanBtn.disabled = false;
+
+  };
+
+
+  reader.readAsDataURL(file);
+
+}
+
+
+/* =========================
+   RENDER AI RESULT
+   ========================= */
+
+function renderScanResult(data) {
+
+  scanResult.innerHTML = "";
+
+
+  const title =
+    document.createElement("b");
+
+  title.textContent =
+    "Hasil AI (estimasi)";
+
+
+  scanResult.appendChild(
+    title
+  );
+
+
+  data.items.forEach(item => {
+
+    const row =
+      document.createElement("div");
+
+    row.className =
+      "row";
+
+
+    const content =
+      document.createElement("div");
+
+
+    const foodName =
+      document.createElement("b");
+
+    foodName.textContent =
+      item.name || "Makanan";
+
+
+    const info =
+      document.createElement("div");
+
+    info.className =
+      "muted";
+
+
+    info.textContent =
+      "±" +
+      (item.portion_g ?? "?") +
+      " g · " +
+      (item.calories_kcal ?? "?") +
+      " kcal · P " +
+      (item.protein_g ?? "?") +
+      "g · K " +
+      (item.carbs_g ?? "?") +
+      "g · L " +
+      (item.fat_g ?? "?") +
+      "g";
+
+
+    content.appendChild(
+      foodName
+    );
+
+    content.appendChild(
+      info
+    );
+
+
+    row.appendChild(
+      content
+    );
+
+
+    scanResult.appendChild(
+      row
+    );
+
+  });
+
+
+  const notes =
+    document.createElement("p");
+
+  notes.className =
+    "muted";
+
+  notes.textContent =
+    data.notes || "";
+
+
+  scanResult.appendChild(
+    notes
+  );
+
+
+  const saveButton =
+    document.createElement("button");
+
+  saveButton.className =
+    "btn primary";
+
+  saveButton.textContent =
+    "Simpan ke Tracker";
+
+
+  saveButton.addEventListener(
+    "click",
+    () => {
+
+      saveAI(
+        data.total || {}
+      );
+
+    }
+  );
+
+
+  scanResult.appendChild(
+    saveButton
+  );
+
+
+  scanResult.classList.remove(
+    "hide"
+  );
+
+}
+
+
+/* =========================
+   SAVE AI FOOD
+   ========================= */
+
+function saveAI(total) {
+
+  state.foods.push({
+
+    n:
+      "AI Food Scan",
+
+    c:
+      Number(total.calories_kcal) || 0,
+
+    p:
+      Number(total.protein_g) || 0,
+
+    carb:
+      Number(total.carbs_g) || 0,
+
+    f:
+      Number(total.fat_g) || 0
+
+  });
+
+
+  save();
+
+  refresh();
+
+  openPage("nutrition");
+
+}
+
+
+/* =========================
+   MAIN REFRESH
+   ========================= */
+
+function refresh() {
+
+  updateProfileDisplay();
+
+
+  /* PROFILE HEADER */
+
+  if (state.profile) {
+
+    pill.textContent =
+      "👤 " +
+      state.profile.name;
+
+
+    hello.textContent =
+      "Selamat datang, " +
+      state.profile.name +
+      " 👋";
+
+
+    ncal.textContent =
+      state.profile.cal;
+
+
+    npro.textContent =
+      state.profile.pro +
+      " g";
+
+  } else {
+
+    pill.textContent =
+      "👤 Guest";
+
+
+    hello.textContent =
+      "Selamat datang 👋";
+
+
+    ncal.textContent =
+      "—";
+
+
+    npro.textContent =
+      "—";
+
+  }
+
+
+  /* FOOD TOTALS */
+
+  const calories =
+    state.foods.reduce(
+      (sum, food) =>
+        sum +
+        (Number(food.c) || 0),
+      0
+    );
+
+
+  const protein =
+    state.foods.reduce(
+      (sum, food) =>
+        sum +
+        (Number(food.p) || 0),
+      0
+    );
+
+
+  const carbs =
+    state.foods.reduce(
+      (sum, food) =>
+        sum +
+        (Number(food.carb) || 0),
+      0
+    );
+
+
+  const fat =
+    state.foods.reduce(
+      (sum, food) =>
+        sum +
+        (Number(food.f) || 0),
+      0
+    );
+
+
+  const water =
+    state.drinks.reduce(
+      (sum, drink) =>
+        sum +
+        (Number(drink.ml) || 0),
+      0
+    );
+
+
+  /* NUTRITION PERCENTAGES */
+
+  const calorieTarget =
+    state.profile?.cal ||
+    2000;
+
+
+  const proteinTarget =
+    state.profile?.pro ||
+    100;
+
+
+  const proteinPercent =
+    Math.min(
+      100,
+      (protein / proteinTarget) *
+      100
+    );
+
+
+  const carbPercent =
+    Math.min(
+      100,
+      (carbs * 4 / calorieTarget) *
+      100
+    );
+
+
+  const fatPercent =
+    Math.min(
+      100,
+      (fat * 9 / calorieTarget) *
+      100
+    );
+
+
+  const waterPercent =
+    Math.min(
+      100,
+      (water / 2500) *
+      100
+    );
+
+
+  /* WORKOUT */
+
+  const completedExercise =
+    state.exercise.filter(Boolean)
+      .length;
+
+
+  const workoutScore =
+    Math.round(
+      (completedExercise / 6) *
+      80 +
+      (state.cardio ? 20 : 0)
+    );
+
+
+  const nutritionScore =
+    Math.round(
+      (
+        Math.min(
+          100,
+          state.profile
+            ? (calories /
+              state.profile.cal) *
+              100
+            : 0
+        ) +
+        proteinPercent +
+        waterPercent
+      ) / 3
+    );
+
+
+  const completion =
+    Math.round(
+      (workoutScore +
+        nutritionScore) / 2
+    );
+
+
+  /* DAY */
+
+  dcal.textContent =
+    Math.round(calories) +
+    "/" +
+    (state.profile?.cal || "—");
+
+
+  dpro.textContent =
+    Math.round(
+      proteinPercent
+    ) +
+    "%";
+
+
+  dwater.textContent =
+    Math.round(
+      waterPercent
+    ) +
+    "%";
+
+
+  dex.textContent =
+    completedExercise +
+    "/6";
+
+
+  dc.textContent =
+    state.cardio
+      ? "20"
+      : "0";
+
+
+  dover.textContent =
+    completion +
+    "%";
+
+
+  /* NUTRITION */
+
+  nwater.textContent =
+    water;
+
+
+  bp.style.width =
+    proteinPercent +
+    "%";
+
+
+  bc.style.width =
+    carbPercent +
+    "%";
+
+
+  bf.style.width =
+    fatPercent +
+    "%";
+
+
+  bw.style.width =
+    waterPercent +
+    "%";
+
+
+  pp.textContent =
+    Math.round(
+      proteinPercent
+    ) +
+    "%";
+
+
+  cp.textContent =
+    Math.round(
+      carbPercent
+    ) +
+    "%";
+
+
+  fp.textContent =
+    Math.round(
+      fatPercent
+    ) +
+    "%";
+
+
+  wp.textContent =
+    Math.round(
+      waterPercent
+    ) +
+    "%";
+
+
+  /* FOOD LIST */
+
+  if (state.foods.length) {
+
+    foods.innerHTML =
+      state.foods
+        .map(food => {
+
+          return `
+            <div class="row">
+              <div>
+                <b>${escapeHtml(food.n)}</b>
+
+                <div class="muted">
+                  ${food.c} kcal ·
+                  P ${food.p}g ·
+                  K ${food.carb}g ·
+                  L ${food.f}g
+                </div>
+              </div>
+            </div>
+          `;
+
+        })
+        .join("");
+
+  } else {
+
+    foods.textContent =
+      "Belum ada.";
+
+  }
+
+
+  /* DRINK LIST */
+
+  if (state.drinks.length) {
+
+    drinks.innerHTML =
+      state.drinks
+        .map(drink =>
+          escapeHtml(drink.type) +
+          " — " +
+          drink.ml +
+          " ml"
+        )
+        .join("<br>");
+
+  } else {
+
+    drinks.textContent =
+      "Belum ada.";
+
+  }
+
+
+  /* TODAY CHECKLIST */
+
+  daylist.innerHTML = `
+
+    <div class="row">
+      <span>🍽️ Nutrition</span>
+      <b>${nutritionScore}%</b>
+    </div>
+
+    <div class="row">
+      <span>🏋️ Strength</span>
+      <b>${completedExercise}/6</b>
+    </div>
+
+    <div class="row">
+      <span>🏃 Cardio</span>
+      <b>
+        ${
+          state.cardio
+            ? "✓ 20 min"
+            : "—"
+        }
+      </b>
+    </div>
+
+  `;
+
+
+  /* PROGRESS */
+
+  score.textContent =
+    completion +
+    "%";
+
+
+  pex.textContent =
+    completedExercise;
+
+
+  pcardio.textContent =
+    state.cardio
+      ? "20"
+      : "0";
+
+
+  pmin.textContent =
+    (completedExercise * 8) +
+    (state.cardio ? 20 : 0);
+
+
+  /* HISTORY */
+
+  if (state.history.length) {
+
+    history.innerHTML =
+      state.history
+        .map(item => {
+
+          return `
+            <div class="row">
+              <div>
+                <b>
+                  ${escapeHtml(item.date)}
+                </b>
+
+                <div class="muted">
+                  ${item.exercise}
+                  exercise ·
+                  ${
+                    item.cardio
+                      ? "20 min cardio"
+                      : "tanpa cardio"
+                  }
+                  ${
+                    item.note
+                      ? " · " +
+                        escapeHtml(item.note)
+                      : ""
+                  }
+                </div>
+              </div>
+            </div>
+          `;
+
+        })
+        .join("");
+
+  } else {
+
+    history.textContent =
+      "Belum ada sesi tersimpan.";
+
+  }
+
+
+  /* TRAINING */
+
+  renderTraining();
+
+
+  /* CARDIO CHECKBOX */
+
+  cardio.checked =
+    state.cardio;
+
+}
+
+
+/* =========================
+   SIMPLE HTML ESCAPE
+   ========================= */
+
+function escapeHtml(value) {
+
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+
+}
+
+
+/* =========================
+   INITIALIZE
+   ========================= */
+
 refresh();
-</script></body></html>
+
+</script>
+
+</body>
+</html>
