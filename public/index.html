@@ -22,7 +22,28 @@
 
 <section id="training" class="page"><div class="hero"><h2>🏋️ Training Center</h2><p>Program menyesuaikan goal, level, equipment, frekuensi, dan durasi.</p></div><div class="card"><h3 id="ttitle">Buat profil terlebih dahulu</h3><div id="exercises"></div></div><div class="card"><h3>🏃 Cardio</h3><div class="row"><div><b>Cardio hari ini</b><div class="muted">20 menit · intensitas sedang</div></div><input id="cardio" class="check" type="checkbox" onchange="state.cardio=this.checked;save();refresh()"></div></div><div class="card"><h3>📝 Hasil latihan</h3><textarea id="wnote" style="width:100%;min-height:80px;border:1px solid #d1d5db;border-radius:10px;padding:9px" placeholder="Catatan beban, repetisi, rasa latihan..."></textarea><br><br><button class="btn primary" onclick="saveNote()">Simpan progress</button></div></section>
 
-<section id="progress" class="page"><div class="hero"><h2>📈 Progress</h2><p>Ringkasan progress harian dan riwayat.</p></div><div class="grid"><div class="card"><h3>Daily Completion</h3><div style="font-size:42px;font-weight:900" id="score">0%</div></div><div class="card"><h3>Workout</h3><div class="metrics"><div class="metric"><b id="pex">0</b><span>exercise</span></div><div class="metric"><b id="pcardio">0</b><span>cardio min</span></div><div class="metric"><b id="pmin">0</b><span>minutes</span></div></div></div></div><div class="card"><h3>🧠 Adaptive Coach</h3><div class="note">Versi final dapat menyesuaikan latihan berikutnya berdasarkan data yang benar-benar tersimpan: completion, beban/repetisi, cardio, nutrisi, dan tren berat. Hasil AI tetap berupa rekomendasi, bukan diagnosis medis.</div></div><div class="card"><h3>📅 Riwayat sesi</h3><div id="history" class="muted">Belum ada sesi tersimpan.</div></div></section>
+<section id="progress" class="page"><div class="hero"><h2>📈 Progress</h2><p>Ringkasan progress harian dan riwayat.</p></div><div class="grid"><div class="card"><h3>Daily Completion</h3><div style="font-size:42px;font-weight:900" id="score">0%</div></div><div class="card"><h3>Workout</h3><div class="metrics"><div class="metric"><b id="pex">0</b><span>exercise</span></div><div class="metric"><b id="pcardio">0</b><span>cardio min</span></div><div class="metric"><b id="pmin">0</b><span>minutes</span></div></div></div></div><div class="card"><h3>🗓️ HarTrack Journey</h3>
+<div class="grid">
+  <div><div class="muted">Program dimulai</div><b id="startDate">—</b></div>
+  <div><div class="muted">Hari perjalanan</div><b id="journeyDay">—</b></div>
+</div>
+<div id="journeyTimeline" style="margin-top:14px"></div>
+</div>
+<div class="card"><h3>📊 Evaluasi Progress</h3>
+<div class="grid">
+  <div class="metric"><b id="review30">Belum</b><span>Day 30</span></div>
+  <div class="metric"><b id="review60">Belum</b><span>Day 60</span></div>
+  <div class="metric"><b id="review90">Belum</b><span>Day 90</span></div>
+  <div class="metric"><b id="review180">Belum</b><span>Day 180</span></div>
+</div>
+<div id="reviewDetails" style="margin-top:12px"></div>
+</div>
+<div class="card"><h3>🧠 Adaptive Coach</h3>
+<div class="muted" style="margin-bottom:10px">Coach membaca data HarTrack yang tersimpan dan membuat rekomendasi praktis untuk hari berikutnya. Ini bukan diagnosis medis.</div>
+<div id="coachSummary"></div>
+<div id="coachPlan" style="margin-top:10px"></div>
+<button class="btn primary" style="margin-top:12px" onclick="generateCoach()">🔄 Analisis & Perbarui Coach</button>
+</div><div class="card"><h3>📅 Riwayat sesi</h3><div id="history" class="muted">Belum ada sesi tersimpan.</div></div></section>
 
 <section id="scan" class="page"><div class="hero"><h2>📸 AI Food Scanner</h2><p>Foto → analisis AI → review → koreksi gramasi → simpan ke Nutrition Tracker.</p></div><div class="card"><div class="scanner"><div style="font-size:44px">🍱</div><input id="photo" type="file" accept="image/*" capture="environment"><p class="muted">Gunakan foto makanan yang jelas. Setelah AI selesai, kamu bisa mengubah nama makanan dan gramasi setiap item sebelum disimpan.</p><button class="btn primary" onclick="scanFood()">Analisis Foto</button><div id="scanStatus" class="muted" style="margin-top:10px"></div></div><div id="scanResult" class="result hide"></div></div></section>
 </main>
@@ -30,10 +51,40 @@
 /* HarTrack: tetap kompatibel dengan data CutTrack lama */
 const oldState=localStorage.getItem('hartrack')||localStorage.getItem('cuttrack');
 const state=JSON.parse(oldState||'{"profile":null,"foods":[],"drinks":[],"exercise":[false,false,false,false,false,false],"cardio":false,"history":[]}');
+state.journey=state.journey||{startDate:null,daily:{}};
+state.journey.daily=state.journey.daily||{};
 const save=()=>{localStorage.setItem('hartrack',JSON.stringify(state));localStorage.removeItem('cuttrack')};
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>openPage(b.dataset.p));
 function openPage(p){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.p===p));document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===p));refresh()}
-function saveProfile(){const h=+height.value,w=+weight.value,a=+age.value,t=+target.value;if(!h||!w||!a)return alert('Isi usia, tinggi, dan berat.');const bmiV=w/(h/100)**2,bmic=bmiV<18.5?'Underweight':bmiV<25?'Normal':bmiV<30?'Overweight':'Obesity',bmr=10*w+6.25*h-5*a+(sex.value==='m'?5:-161),tdee=bmr*+activity.value;let cal=tdee;if(goal.value==='Fat Loss')cal=Math.max(1200,tdee-500);if(goal.value==='Muscle Gain')cal=tdee+250;state.profile={name:name.value||'Pengguna',sex:sex.value,age:a,height:h,weight:w,target:t,goal:goal.value,level:level.value,days:+days.value,duration:duration.value,equipment:equipment.value,cal:Math.round(cal),pro:Math.round(1.6*(t||w)),bmi:bmiV};state.exercise=[false,false,false,false,false,false];state.cardio=false;save();presult.classList.remove('hide');bmiEl();refresh()}
+function saveProfile(){
+  const h=+height.value,w=+weight.value,a=+age.value,t=+target.value;
+  if(!h||!w||!a)return alert('Isi usia, tinggi, dan berat.');
+  const bmiV=w/(h/100)**2;
+  const bmic=bmiV<18.5?'Underweight':bmiV<25?'Normal':bmiV<30?'Overweight':'Obesity';
+  const bmr=10*w+6.25*h-5*a+(sex.value==='m'?5:-161);
+  const tdee=bmr*+activity.value;
+  let cal=tdee;
+  if(goal.value==='Fat Loss')cal=Math.max(1200,tdee-500);
+  if(goal.value==='Muscle Gain')cal=tdee+250;
+
+  // Tanggal mulai hanya dibuat sekali dan tidak berubah saat aplikasi dibuka lagi.
+  if(!state.journey.startDate) state.journey.startDate=todayKey();
+
+  state.profile={
+    name:name.value||'Pengguna',sex:sex.value,age:a,height:h,weight:w,target:t,
+    goal:goal.value,level:level.value,days:+days.value,duration:duration.value,
+    equipment:equipment.value,cal:Math.round(cal),pro:Math.round(1.6*(t||w)),
+    bmi:bmiV,bmiCategory:bmic
+  };
+
+  state.exercise=[false,false,false,false,false,false];
+  state.cardio=false;
+  recordToday();
+  save();
+  presult.classList.remove('hide');
+  bmiEl();
+  refresh();
+}
 function bmiEl(){bmi.textContent=state.profile.bmi.toFixed(1);bmicat.textContent=state.profile.bmi<18.5?'Underweight':state.profile.bmi<25?'Normal':state.profile.bmi<30?'Overweight':'Obesity';const h=state.profile.height/100;ideal.textContent='Rentang BMI 18,5–24,9: '+(18.5*h*h).toFixed(1)+' – '+(24.9*h*h).toFixed(1)+' kg';calTarget.textContent=state.profile.cal;proTarget.textContent=state.profile.pro+' g';targetShow.textContent=state.profile.target+' kg'}
 function names(){const g=state.profile?.goal;if(g==='Fat Loss')return ['Goblet Squat','Push Up','Lat Pulldown','Romanian Deadlift','Shoulder Press','Core'];if(g==='Muscle Gain')return ['Squat','Bench Press','Lat Pulldown','Romanian Deadlift','Shoulder Press','Biceps Curl'];if(g==='Strength')return ['Squat','Bench Press','Deadlift','Overhead Press','Row','Core'];return ['Squat','Push Up','Row','Lunge','Shoulder Press','Core']}
 function renderTraining(){if(!state.profile){ttitle.textContent='Buat profil terlebih dahulu';exercises.innerHTML='';return}ttitle.textContent=state.profile.goal+' · '+state.profile.level+' · '+state.profile.days+'x/minggu';exercises.innerHTML=names().map((n,i)=>`<div class="exercise"><div class="row" style="border:0;padding:0"><div><b>${n}</b><small>3 set · 8–12 reps · ${state.profile.equipment}</small></div><input class="check" type="checkbox" ${state.exercise[i]?'checked':''} onchange="state.exercise[${i}]=this.checked;save();refresh()"></div></div>`).join('')}
@@ -153,7 +204,165 @@ function saveEditedAI(){
   openPage('nutrition');
 }
 
+
+function todayKey(){
+  const d=new Date();
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function dateFromKey(k){return new Date(k+'T12:00:00')}
+function formatDate(k){return dateFromKey(k).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'})}
+function daysBetween(a,b){return Math.floor((dateFromKey(b)-dateFromKey(a))/86400000)}
+function currentJourneyDay(){
+  if(!state.journey.startDate)return null;
+  return Math.max(1,daysBetween(state.journey.startDate,todayKey())+1);
+}
+function recordToday(){
+  if(!state.profile||!state.journey.startDate)return;
+  const key=todayKey();
+  const cal=state.foods.reduce((s,x)=>s+Number(x.c||0),0);
+  const pro=state.foods.reduce((s,x)=>s+Number(x.p||0),0);
+  const carb=state.foods.reduce((s,x)=>s+Number(x.carb||0),0);
+  const fat=state.foods.reduce((s,x)=>s+Number(x.f||0),0);
+  const water=state.drinks.reduce((s,x)=>s+Number(x.ml||0),0);
+  const done=state.exercise.filter(Boolean).length;
+  const completion=Math.round((Math.min(100,state.profile.cal?cal/state.profile.cal*100:0)+Math.min(100,state.profile.pro?pro/state.profile.pro*100:0)+Math.min(100,water/2500*100)+Math.round(done/6*100))/4);
+  state.journey.daily[key]={
+    day:currentJourneyDay(),date:key,weight:Number(state.profile.weight)||null,
+    calories:Math.round(cal),protein:round(pro,1),carbs:round(carb,1),fat:round(fat,1),
+    water,exercise:done,cardio:state.cardio?20:0,completion
+  };
+}
+
+function generateCoach(){
+  const box=document.getElementById('coachSummary');
+  const plan=document.getElementById('coachPlan');
+  if(!state.profile){
+    box.innerHTML='<div class="note">Lengkapi Personal Profile terlebih dahulu agar Coach bisa membaca targetmu.</div>';
+    plan.innerHTML='';
+    return;
+  }
+
+  recordToday();
+  const entries=Object.values(state.journey.daily||{}).sort((a,b)=>a.date.localeCompare(b.date));
+  const recent=entries.slice(-7);
+  const p=state.profile;
+
+  const avg=(key)=>{
+    const vals=recent.map(x=>Number(x[key])).filter(Number.isFinite);
+    return vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0;
+  };
+
+  const avgCal=avg('calories');
+  const avgPro=avg('protein');
+  const avgCompletion=avg('completion');
+  const avgExercise=avg('exercise');
+  const avgCardio=avg('cardio');
+
+  let advice=[];
+  let priority='Pertahankan konsistensi';
+
+  if(p.goal==='Fat Loss'){
+    if(avgCal>p.cal*1.1) advice.push('Rata-rata kalori 7 hari terakhir berada di atas target. Fokus pada porsi dan konsistensi pencatatan makanan sebelum mengubah target kalori.');
+    else if(avgCal>0&&avgCal<p.cal*0.8) advice.push('Rata-rata kalori cukup jauh di bawah target. Hindari memangkas asupan terlalu agresif; prioritaskan pola makan yang konsisten.');
+    else advice.push('Asupan kalori relatif dekat dengan target. Pertahankan konsistensi dan gunakan tren berat mingguan, bukan satu hari, untuk evaluasi.');
+  } else if(p.goal==='Muscle Gain'){
+    if(avgCal>0&&avgCal<p.cal*0.9) advice.push('Rata-rata kalori masih di bawah target. Pastikan porsi dan frekuensi makan cukup untuk mendukung target latihan.');
+    else advice.push('Asupan energi relatif dekat dengan target. Pertahankan konsistensi sambil memantau progres latihan dan berat.');
+  } else {
+    advice.push('Gunakan target kalori sebagai panduan dan pertahankan pola makan yang konsisten.');
+  }
+
+  if(avgPro>0 && avgPro<p.pro*0.85){
+    advice.push('Protein rata-rata masih di bawah target profil. Tambahkan sumber protein pada beberapa waktu makan.');
+  } else if(avgPro>0){
+    advice.push('Protein rata-rata sudah mendekati target profil.');
+  }
+
+  if(avgCompletion<60 && recent.length>=3){
+    priority='Prioritas: konsistensi';
+    advice.push('Completion beberapa hari terakhir masih rendah. Mulai dari sesi yang realistis dan pertahankan jadwal.');
+  } else if(avgExercise<3 && recent.length>=3){
+    priority='Prioritas: latihan';
+    advice.push('Volume latihan yang tercatat masih rendah. Ikuti sesi sesuai jadwal tanpa menambah volume secara mendadak.');
+  } else if(avgCardio<10 && recent.length>=3){
+    priority='Prioritas: aktivitas';
+    advice.push('Cardio yang tercatat masih terbatas. Jika sesuai kondisi dan programmu, tambahkan aktivitas ringan secara bertahap.');
+  } else {
+    advice.push('Konsistensi latihan terlihat cukup baik dari data yang tersimpan.');
+  }
+
+  // Trend berat: bandingkan data tertua dan terbaru yang punya berat.
+  const weights=entries.filter(x=>Number.isFinite(Number(x.weight))&&Number(x.weight)>0);
+  let weightText='Belum cukup data untuk membaca tren berat.';
+  if(weights.length>=2){
+    const first=weights[0], last=weights[weights.length-1];
+    const delta=Number(last.weight)-Number(first.weight);
+    weightText=`Tren berat sejak ${formatDate(first.date)}: ${round(delta,1)} kg (${Number(first.weight).toFixed(1)} → ${Number(last.weight).toFixed(1)} kg).`;
+    if(p.goal==='Fat Loss' && delta<0) advice.push('Tren berat bergerak turun. Evaluasi menggunakan tren beberapa minggu, bukan perubahan harian.');
+    if(p.goal==='Muscle Gain' && delta>0) advice.push('Tren berat bergerak naik. Pantau juga performa latihan agar perubahan berat dibaca bersama progres latihan.');
+  }
+
+  box.innerHTML=`
+    <div class="metrics">
+      <div class="metric"><b>${recent.length}</b><span>hari dianalisis</span></div>
+      <div class="metric"><b>${avgCal?Math.round(avgCal):'—'}</b><span>avg kcal</span></div>
+      <div class="metric"><b>${avgPro?Math.round(avgPro):'—'} g</b><span>avg protein</span></div>
+      <div class="metric"><b>${recent.length?Math.round(avgCompletion):'—'}%</b><span>avg completion</span></div>
+    </div>
+    <div class="note" style="margin-top:10px"><b>${priority}</b><br>${weightText}</div>`;
+
+  plan.innerHTML=`<div class="result"><b>Rekomendasi Coach</b><ul style="margin:8px 0 0 18px">${advice.map(x=>`<li style="margin:6px 0">${esc(x)}</li>`).join('')}</ul></div>`;
+}
+
+function renderJourney(){
+  if(!state.journey.startDate){
+    startDate.textContent='Belum dimulai';
+    journeyDay.textContent='—';
+    journeyTimeline.innerHTML='<div class="muted">Simpan profil untuk memulai Journey.</div>';
+    review30.textContent=review60.textContent=review90.textContent=review180.textContent='Belum';
+    reviewDetails.innerHTML='';
+    return;
+  }
+  const day=currentJourneyDay();
+  startDate.textContent=formatDate(state.journey.startDate);
+  journeyDay.textContent='Day '+day;
+
+  const milestones=[30,60,90,180];
+  milestones.forEach(n=>{
+    const el=document.getElementById('review'+n);
+    el.textContent=day>=n?'Tersedia':'Day '+n;
+  });
+
+  const entries=Object.values(state.journey.daily).sort((a,b)=>a.date.localeCompare(b.date));
+  const recent=entries.slice(-7).reverse();
+  journeyTimeline.innerHTML=recent.length?recent.map(x=>`
+    <div class="row">
+      <div><b>Day ${x.day} · ${formatDate(x.date)}</b>
+      <div class="muted">Berat ${x.weight??'—'} kg · ${x.calories} kcal · Protein ${x.protein} g · Workout ${x.exercise}/6 · Cardio ${x.cardio} min</div></div>
+      <b>${x.completion}%</b>
+    </div>`).join(''):'Belum ada data harian.';
+
+  let details='';
+  milestones.forEach(n=>{
+    if(day>=n){
+      const key=dateFromKey(state.journey.startDate);
+      key.setDate(key.getDate()+n-1);
+      const targetKey=key.toISOString().slice(0,10);
+      const target=state.journey.daily[targetKey];
+      const start=state.journey.daily[state.journey.startDate];
+      details+=`<div class="result"><b>Evaluasi Day ${n}</b><div class="muted">Tanggal evaluasi: ${formatDate(targetKey)}</div>
+      ${target?`<div style="margin-top:7px">Berat: <b>${target.weight??'—'} kg</b> · Kalori: <b>${target.calories}</b> kcal · Protein: <b>${target.protein} g</b> · Workout: <b>${target.exercise}/6</b></div>`
+      :`<div class="muted" style="margin-top:7px">Tanggal evaluasi sudah tercapai, tetapi belum ada data yang disimpan pada tanggal tersebut.</div>`}
+      ${start&&target&&start.weight&&target.weight?`<div class="muted">Perubahan berat dari Day 1: <b>${round(target.weight-start.weight,1)} kg</b></div>`:''}
+      </div>`;
+    }
+  });
+  reviewDetails.innerHTML=details||'<div class="muted">Evaluasi akan muncul saat milestone tercapai.</div>';
+}
+
 function refresh(){
+  if(state.profile) recordToday();
   if(state.profile){pill.textContent='👤 '+state.profile.name;hello.textContent='Selamat datang, '+state.profile.name+' 👋';ncal.textContent=state.profile.cal;npro.textContent=state.profile.pro+' g'}
   const cal=state.foods.reduce((s,x)=>s+x.c,0),pro=state.foods.reduce((s,x)=>s+x.p,0),carb=state.foods.reduce((s,x)=>s+x.carb,0),fat=state.foods.reduce((s,x)=>s+x.f,0),water=state.drinks.reduce((s,x)=>s+x.ml,0),pp=Math.min(100,state.profile?pro/state.profile.pro*100:0),cp=Math.min(100,carb*4/(state.profile?.cal||2000)*100),fp=Math.min(100,fat*9/(state.profile?.cal||2000)*100),wp=Math.min(100,water/2500*100),done=state.exercise.filter(Boolean).length,work=Math.round(done/6*80+(state.cardio?20:0)),nutrition=Math.round((Math.min(100,state.profile?cal/state.profile.cal*100:0)+pp+wp)/3),score=Math.round((work+nutrition)/2);
   dcal.textContent=Math.round(cal)+'/'+(state.profile?.cal||'—');dpro.textContent=Math.round(pp)+'%';dwater.textContent=Math.round(wp)+'%';dex.textContent=done+'/6';dc.textContent=state.cardio?20:0;dover.textContent=score+'%';
@@ -163,7 +372,7 @@ function refresh(){
   daylist.innerHTML=`<div class="row"><span>🍽️ Nutrition</span><b>${nutrition}%</b></div><div class="row"><span>🏋️ Strength</span><b>${done}/6</b></div><div class="row"><span>🏃 Cardio</span><b>${state.cardio?'✓ 20 min':'—'}</b></div>`;
   document.getElementById('score').textContent=score+'%';pex.textContent=done;pcardio.textContent=state.cardio?20:0;pmin.textContent=(done*8)+(state.cardio?20:0);
   history.innerHTML=state.history.length?state.history.map(x=>`<div class="row"><div><b>${x.date}</b><div class="muted">${x.exercise} exercise · ${x.cardio?'20 min cardio':'tanpa cardio'}${x.note?' · '+x.note:''}</div></div></div>`).join(''):'Belum ada sesi tersimpan.';
-  renderTraining();if(state.profile){document.getElementById('presult').classList.remove('hide');bmiEl()}
+  renderTraining();renderJourney();if(state.profile)generateCoach();if(state.profile){document.getElementById('presult').classList.remove('hide');bmiEl()}
 }
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]) )}
 refresh();
