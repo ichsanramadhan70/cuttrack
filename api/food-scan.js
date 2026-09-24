@@ -1,7 +1,4 @@
 module.exports = async (req, res) => {
-  // =========================================================
-  // ONLY POST
-  // =========================================================
   if (req.method !== "POST") {
     return res.status(405).json({
       error: "POST only"
@@ -9,9 +6,9 @@ module.exports = async (req, res) => {
   }
 
   try {
-    // =======================================================
-    // AMBIL IMAGE DARI FRONTEND
-    // =======================================================
+    // =====================================================
+    // 1. AMBIL IMAGE
+    // =====================================================
     const { image } = req.body || {};
 
     if (!image || typeof image !== "string") {
@@ -26,9 +23,9 @@ module.exports = async (req, res) => {
       });
     }
 
-    // =======================================================
-    // CEK GEMINI API KEY
-    // =======================================================
+    // =====================================================
+    // 2. GEMINI API KEY
+    // =====================================================
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
@@ -37,10 +34,12 @@ module.exports = async (req, res) => {
       });
     }
 
-    // =======================================================
-    // AMBIL MIME TYPE DAN BASE64 IMAGE
-    // =======================================================
-    const match = image.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
+    // =====================================================
+    // 3. PISAHKAN MIME TYPE DAN BASE64
+    // =====================================================
+    const match = image.match(
+      /^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/
+    );
 
     if (!match) {
       return res.status(400).json({
@@ -51,20 +50,23 @@ module.exports = async (req, res) => {
     const mimeType = match[1];
     const base64Data = match[2];
 
-    // =======================================================
-    // GEMINI MODEL
-    // =======================================================
-    const model = "gemini-3.6-flash";
+    // =====================================================
+    // 4. MODEL GEMINI
+    // =====================================================
+    const models = [
+      "gemini-3.5-flash-lite",
+      "gemini-3.6-flash"
+    ];
 
-    // =======================================================
-    // PROMPT
-    // =======================================================
+    // =====================================================
+    // 5. PROMPT
+    // =====================================================
     const prompt = `
 Analyze this food photo for a fitness and nutrition tracker.
 
 Identify all visible food and drink items.
 
-For every visible item, estimate:
+For every visible food item, estimate:
 
 - food name
 - portion in grams
@@ -73,19 +75,19 @@ For every visible item, estimate:
 - carbohydrates in grams
 - fat in grams
 
-Important rules:
+Rules:
 
-1. These values are estimates based on the image.
-2. Do NOT claim laboratory accuracy.
-3. If the portion cannot reasonably be estimated, use null.
-4. Do not invent food items that are not visible.
-5. If multiple food items are visible, list them separately.
-6. Calculate the total nutrition from the estimated items.
+1. Values are estimates from the image.
+2. Do not claim laboratory accuracy.
+3. Do not invent food that is not visible.
+4. If portion cannot reasonably be estimated, use null.
+5. If several foods are visible, list them separately.
+6. Calculate the total nutrition from all estimated items.
 7. Return ONLY valid JSON.
 8. Do not use Markdown.
 9. Do not use code fences.
 
-Use exactly this JSON structure:
+Return exactly this structure:
 
 {
   "items": [
@@ -108,73 +110,120 @@ Use exactly this JSON structure:
   "notes": "string"
 }
 
-The confidence value MUST be exactly one of:
+confidence MUST be exactly:
 
 "low"
 "medium"
 "high"
 
-If a numeric value cannot reasonably be estimated, use null.
+If a number cannot reasonably be estimated, use null.
 `;
 
-    // =======================================================
-    // CALL GEMINI API
-    // =======================================================
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": apiKey
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [
+    // =====================================================
+    // 6. COBA MODEL GEMINI
+    // =====================================================
+    let response;
+    let data;
+    let lastError;
+
+    for (const model of models) {
+      try {
+        console.log("TRYING GEMINI MODEL:", model);
+
+        response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-goog-api-key": apiKey
+            },
+            body: JSON.stringify({
+              contents: [
                 {
-                  inline_data: {
-                    mime_type: mimeType,
-                    data: base64Data
-                  }
-                },
-                {
-                  text: prompt
+                  role: "user",
+                  parts: [
+                    {
+                      inline_data: {
+                        mime_type: mimeType,
+                        data: base64Data
+                      }
+                    },
+                    {
+                      text: prompt
+                    }
+                  ]
                 }
-              ]
-            }
-          ],
-          generationConfig: {
-            temperature: 0.2,
-            responseMimeType: "application/json"
+              ],
+              generationConfig: {
+                temperature: 0.2,
+                responseMimeType: "application/json"
+              }
+            })
           }
-        })
+        );
+
+        data = await response.json();
+
+        console.log(
+          "GEMINI STATUS:",
+          response.status,
+          "MODEL:",
+          model
+        );
+
+        console.log(
+          "GEMINI RESPONSE:",
+          JSON.stringify(data)
+        );
+
+        // Kalau berhasil, berhenti
+        if (response.ok) {
+          break;
+        }
+
+        lastError = data;
+
+        // Kalau model tidak tersedia, coba model berikutnya
+        if (
+          response.status === 404 ||
+          response.status === 503
+        ) {
+          continue;
+        }
+
+        // Error lain langsung dikembalikan
+        return res.status(response.status).json({
+          error: "Gemini API error",
+          status: response.status,
+          details: data
+        });
+
+      } catch (error) {
+        lastError = {
+          message: error.message
+        };
+
+        console.error(
+          "GEMINI REQUEST ERROR:",
+          error
+        );
       }
-    );
+    }
 
-    // =======================================================
-    // BACA RESPONSE
-    // =======================================================
-    const data = await response.json();
-
-    console.log("GEMINI STATUS:", response.status);
-    console.log("GEMINI RESPONSE:", JSON.stringify(data));
-
-    // =======================================================
-    // HANDLE GEMINI ERROR
-    // =======================================================
-    if (!response.ok) {
-      return res.status(response.status).json({
-        error: "Gemini API error",
-        status: response.status,
-        details: data
+    // =====================================================
+    // 7. SEMUA MODEL GAGAL
+    // =====================================================
+    if (!response || !response.ok) {
+      return res.status(503).json({
+        error: "Gemini API tidak tersedia.",
+        details: lastError
       });
     }
 
-    // =======================================================
-    // AMBIL TEXT DARI GEMINI
-    // =======================================================
+    // =====================================================
+    // 8. AMBIL TEXT RESPONSE
+    // =====================================================
     const text =
       data?.candidates?.[0]?.content?.parts
         ?.map(part => part.text || "")
@@ -190,15 +239,15 @@ If a numeric value cannot reasonably be estimated, use null.
 
     console.log("GEMINI TEXT:", text);
 
-    // =======================================================
-    // PARSE JSON
-    // =======================================================
+    // =====================================================
+    // 9. PARSE JSON
+    // =====================================================
     let result;
 
     try {
       result = JSON.parse(text);
-    } catch (parseError) {
-      // Bersihkan kemungkinan ```json ... ```
+    } catch (error) {
+
       const cleaned = text
         .replace(/^```json\s*/i, "")
         .replace(/^```\s*/i, "")
@@ -207,22 +256,27 @@ If a numeric value cannot reasonably be estimated, use null.
 
       try {
         result = JSON.parse(cleaned);
-      } catch (secondParseError) {
-        // Coba cari object JSON
+
+      } catch (error2) {
+
         const start = cleaned.indexOf("{");
         const end = cleaned.lastIndexOf("}");
 
-        if (start !== -1 && end !== -1 && end > start) {
-          const jsonText = cleaned.substring(start, end + 1);
+        if (start !== -1 && end !== -1) {
+
+          const jsonText =
+            cleaned.substring(start, end + 1);
 
           try {
             result = JSON.parse(jsonText);
-          } catch (thirdParseError) {
+
+          } catch (error3) {
             return res.status(502).json({
               error: "Gemini returned invalid JSON.",
               raw: text
             });
           }
+
         } else {
           return res.status(502).json({
             error: "Gemini returned invalid JSON.",
@@ -232,9 +286,9 @@ If a numeric value cannot reasonably be estimated, use null.
       }
     }
 
-    // =======================================================
-    // VALIDASI HASIL
-    // =======================================================
+    // =====================================================
+    // 10. VALIDASI HASIL
+    // =====================================================
     if (!result || typeof result !== "object") {
       return res.status(502).json({
         error: "Invalid Gemini result."
@@ -254,7 +308,11 @@ If a numeric value cannot reasonably be estimated, use null.
       };
     }
 
-    if (!["low", "medium", "high"].includes(result.confidence)) {
+    if (
+      !["low", "medium", "high"].includes(
+        result.confidence
+      )
+    ) {
       result.confidence = "medium";
     }
 
@@ -262,20 +320,22 @@ If a numeric value cannot reasonably be estimated, use null.
       result.notes = "";
     }
 
-    // =======================================================
-    // SUCCESS
-    // =======================================================
+    // =====================================================
+    // 11. BERHASIL
+    // =====================================================
     return res.status(200).json(result);
 
   } catch (error) {
-    // =======================================================
-    // SERVER ERROR
-    // =======================================================
-    console.error("GEMINI SERVER ERROR:", error);
+
+    console.error(
+      "GEMINI SERVER ERROR:",
+      error
+    );
 
     return res.status(500).json({
       error: "Gemini API error",
-      message: error.message || "Unknown error"
+      message:
+        error.message || "Unknown error"
     });
   }
 };
