@@ -12,13 +12,13 @@ module.exports = async (req, res) => {
 
     if (!image || !image.startsWith("data:image/")) {
       return res.status(400).json({
-        error: "Image tidak ditemukan atau format gambar tidak valid."
+        error: "Image is required"
       });
     }
 
     if (!process.env.OPENAI_API_KEY) {
       return res.status(500).json({
-        error: "OPENAI_API_KEY belum terpasang."
+        error: "OPENAI_API_KEY belum dipasang di Vercel."
       });
     }
 
@@ -36,51 +36,54 @@ module.exports = async (req, res) => {
             {
               type: "input_text",
               text: `
-You are the food analysis engine for CutTrack.
+Analyze this food photo for a fitness and nutrition tracker.
 
-Analyze the food in this image.
+Identify all visible food items.
 
-IMPORTANT:
-- Identify clearly visible food items separately.
-- Estimate portion size in grams.
-- Nutrition values are estimates, not exact measurements.
-- Do not invent precision.
-- If something cannot be identified reliably, use null.
-- Consider visible sauces, oil, cheese, toppings, gravy, etc.
-- Do not count plates, bowls, packaging or utensils as food.
+Estimate:
+- food name
+- portion in grams
+- calories in kcal
+- protein in grams
+- carbohydrates in grams
+- fat in grams
+
+Important:
+These are estimates from an image and are NOT exact measurements.
+Do not pretend the values are laboratory-accurate.
+If the portion cannot be reasonably estimated, use null.
 
 Return ONLY valid JSON.
+Do not use markdown.
+Do not use code fences.
 
-Required structure:
+Required JSON structure:
 
 {
   "items": [
     {
       "name": "string",
-      "portion_g": number,
-      "calories_kcal": number,
-      "protein_g": number,
-      "carbs_g": number,
-      "fat_g": number,
-      "confidence": "low|medium|high",
-      "reasoning": "string"
+      "portion_g": number or null,
+      "calories_kcal": number or null,
+      "protein_g": number or null,
+      "carbs_g": number or null,
+      "fat_g": number or null
     }
   ],
   "total": {
-    "calories_kcal": number,
-    "protein_g": number,
-    "carbs_g": number,
-    "fat_g": number
+    "calories_kcal": number or null,
+    "protein_g": number or null,
+    "carbs_g": number or null,
+    "fat_g": number or null
   },
-  "overall_confidence": "low|medium|high",
-  "photo_quality": "poor|acceptable|good",
-  "notes": "string",
-  "needs_user_confirmation": true
+  "confidence": "low",
+  "notes": "string"
 }
 
-Do not use markdown.
-Do not use code fences.
-Return JSON only.
+The confidence must be exactly one of:
+"low"
+"medium"
+"high"
 `
             },
             {
@@ -95,9 +98,11 @@ Return JSON only.
 
     const text = response.output_text || "";
 
+    console.log("OPENAI RESPONSE:", text);
+
     if (!text) {
       return res.status(502).json({
-        error: "OpenAI tidak mengembalikan hasil."
+        error: "OpenAI returned an empty response."
       });
     }
 
@@ -110,33 +115,33 @@ Return JSON only.
 
       if (!match) {
         return res.status(502).json({
-          error: "OpenAI tidak mengembalikan JSON yang valid.",
+          error: "OpenAI returned invalid JSON.",
           raw: text
         });
       }
 
-      result = JSON.parse(match[0]);
+      try {
+        result = JSON.parse(match[0]);
+      } catch (secondParseError) {
+        return res.status(502).json({
+          error: "Could not parse OpenAI JSON.",
+          raw: text
+        });
+      }
     }
 
-    return res.status(200).json({
-      ...result,
-      scanned_at: new Date().toISOString(),
-      disclaimer:
-        "Nilai nutrisi merupakan estimasi berdasarkan foto dan perkiraan ukuran porsi."
-    });
+    return res.status(200).json(result);
 
   } catch (error) {
 
-    console.error("========== FOOD SCAN ERROR ==========");
-    console.error(error);
-    console.error("====================================");
+    console.error("OPENAI ERROR:", error);
 
-    return res.status(500).json({
+    return res.status(error.status || 500).json({
       error: "OpenAI API error",
-      message: error.message || "Unknown error",
-      status: error.status || null,
+      status: error.status || 500,
       code: error.code || null,
-      type: error.type || null
+      type: error.type || null,
+      message: error.message || "Unknown OpenAI error"
     });
   }
 };
