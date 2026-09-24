@@ -23,13 +23,13 @@
 <div class="field"><label>Aktivitas</label><select id="activity"><option value="1.2">Sedentary</option><option value="1.375">Light</option><option value="1.55">Moderate</option><option value="1.725">High</option></select></div>
 <div class="field"><label>Level latihan</label><select id="level"><option>Pemula</option><option>Menengah</option><option>Lanjut</option></select></div><div class="field"><label>Hari/minggu</label><select id="days"><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select></div>
 <div class="field"><label>Durasi</label><select id="duration"><option>20 menit</option><option>30 menit</option><option selected>45 menit</option><option>60 menit</option><option>90 menit</option></select></div><div class="field"><label>Equipment</label><select id="equipment"><option>Gym lengkap</option><option>Home gym</option><option>Dumbbell</option><option>Resistance band</option><option>Bodyweight</option></select></div>
-<div class="full"><button class="btn primary" onclick="saveProfile()">Simpan Profil & Hitung</button></div></div></div><div id="presult" class="grid hide"><div class="card"><h3>🧮 BMI</h3><div style="font-size:42px;font-weight:900" id="bmi">—</div><b id="bmicat">—</b><p class="muted" id="ideal">—</p></div><div class="card"><h3>🎯 Target</h3><div class="metrics"><div class="metric"><b id="calTarget">—</b><span>kcal</span></div><div class="metric"><b id="proTarget">—</b><span>protein</span></div><div class="metric"><b id="targetShow">—</b><span>target kg</span></div></div></div></div></section>
+<div class="full"><button class="btn primary" onclick="saveProfile()">Simpan Profil & Hitung</button></div></div></div><div id="presult" class="grid hide"><div class="card"><h3>🧮 BMI</h3><div style="font-size:42px;font-weight:900" id="bmi">—</div><b id="bmicat">—</b><p class="muted" id="ideal">—</p></div><div class="card"><h3>🎯 Target</h3><div class="metrics"><div class="metric"><b id="calTarget">—</b><span>kcal</span></div><div class="metric"><b id="proTarget">—</b><span>protein</span></div><div class="metric"><b id="targetShow">—</b><span>target kg</span></div></div></div></div><div class="card" style="margin-top:12px"><h3>⚙️ Data Testing</h3><div class="muted">Untuk mengulang simulasi tanpa mengisi profil dari awal.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" type="button" onclick="resetProgressHarTrack()">🔄 Reset Progress</button><button class="btn" type="button" onclick="resetAllHarTrack()">🗑️ Reset Semua Data</button></div></div></section>
 
 <section id="nutrition" class="page"><div class="hero"><h2>🍽️ Nutrition Tracker</h2><p>Manual input, cairan, dan hasil AI Food Scanner tersimpan di hari ini.</p></div><div class="grid"><div class="card"><h3>Target & progress</h3><div class="metrics"><div class="metric"><b id="ncal">—</b><span>kcal</span></div><div class="metric"><b id="npro">—</b><span>protein</span></div><div class="metric"><b id="nwater">0</b><span>ml air</span></div></div><div class="barrow"><span>Protein</span><div class="bar"><i id="bp"></i></div><b id="pp">0%</b></div><div class="barrow"><span>Karbo</span><div class="bar"><i id="bc"></i></div><b id="cp">0%</b></div><div class="barrow"><span>Lemak</span><div class="bar"><i id="bf"></i></div><b id="fp">0%</b></div><div class="barrow"><span>Air</span><div class="bar"><i id="bw"></i></div><b id="wp">0%</b></div></div><div class="card"><h3>💧 Cairan</h3><div class="form"><div class="field"><label>Jenis</label><select id="drink"><option>Air putih</option><option>Kopi</option><option>Teh</option><option>Susu</option><option>Jus</option><option>Minuman lain</option></select></div><div class="field"><label>Jumlah ml</label><input id="ml" type="number"></div><div><button class="btn primary" onclick="addDrink()">Tambah</button></div></div><div id="drinks" class="muted" style="margin-top:10px"></div></div></div>
 <div class="card"><h3>➕ Input makanan manual</h3><div class="form"><div class="field"><label>Nama</label><input id="fn"></div><div class="field"><label>Gramasi g</label><input id="fportion" type="number" min="0"></div><div class="field"><label>Kalori</label><input id="fc" type="number" min="0"></div><div class="field"><label>Protein g</label><input id="fpv" type="number" min="0"></div><div class="field"><label>Karbo g</label><input id="fcarb" type="number" min="0"></div><div class="field"><label>Lemak g</label><input id="ffat" type="number" min="0"></div><div><button class="btn primary" onclick="addFood()">Simpan</button></div></div></div><div class="card"><h3>🍽️ Makanan hari ini</h3><div class="note" style="margin-bottom:10px">Human error bisa diperbaiki. Setiap makanan yang sudah tersimpan dapat <b>diedit</b> atau <b>dihapus</b> tanpa menghapus makanan lainnya.</div><div id="foods" class="muted">Belum ada.</div></div></section>
 
 
-<section id="training" class="page"><div class="hero"><h2>🏋️ Training Center</h2><p>Program menyesuaikan goal, level, equipment, frekuensi, dan durasi.</p></div><div class="card"><h3 id="ttitle">Buat profil terlebih dahulu</h3><div id="exercises"></div></div><div class="card"><h3>🏃 Cardio</h3><div class="row"><div><b>Cardio hari ini</b><div class="muted">20 menit · intensitas sedang</div></div><input id="cardio" class="check" type="checkbox" onchange="state.cardio=this.checked;save();refresh()"></div></div><div class="card"><h3>📝 Hasil latihan</h3><textarea id="wnote" style="width:100%;min-height:80px;border:1px solid #d1d5db;border-radius:10px;padding:9px" placeholder="Catatan beban, repetisi, rasa latihan..."></textarea><br><br><button class="btn primary" onclick="saveNote()">Simpan progress</button></div></section>
+<section id="training" class="page"><div class="hero"><h2>🏋️ Training Center</h2><p>Program menyesuaikan goal, level, equipment, frekuensi, dan durasi.</p><div id="trainingProfileStatus" class="muted" style="margin-top:8px"></div></div><div class="card"><h3 id="ttitle">Buat profil terlebih dahulu</h3><div id="exercises"></div></div><div class="card"><h3>🏃 Cardio</h3><div class="row"><div><b>Cardio hari ini</b><div class="muted">20 menit · intensitas sedang</div></div><input id="cardio" class="check" type="checkbox" onchange="state.cardio=this.checked;save();refresh()"></div></div><div class="card"><h3>📝 Hasil latihan</h3><textarea id="wnote" style="width:100%;min-height:80px;border:1px solid #d1d5db;border-radius:10px;padding:9px" placeholder="Catatan beban, repetisi, rasa latihan..."></textarea><br><br><button class="btn primary" onclick="saveNote()">Simpan progress</button></div></section>
 
 <section id="progress" class="page"><div class="hero"><h2>📈 Progress</h2><p>Ringkasan progress harian dan riwayat.</p></div><div class="grid"><div class="card"><h3>Daily Completion</h3><div style="font-size:42px;font-weight:900" id="score">0%</div></div><div class="card"><h3>Workout</h3><div class="metrics"><div class="metric"><b id="pex">0</b><span>exercise</span></div><div class="metric"><b id="pcardio">0</b><span>cardio min</span></div><div class="metric"><b id="pmin">0</b><span>minutes</span></div></div></div></div><div class="card"><h3>🗓️ HarTrack Journey</h3>
 <div class="grid">
@@ -83,6 +83,7 @@ function loadState(){
   s.exercise=[0,1,2,3,4,5].map(i=>!!s.exercise[i]);
   s.history=Array.isArray(s.history)?s.history:[];
   s.trainingChecks=(s.trainingChecks&&typeof s.trainingChecks==='object')?s.trainingChecks:{};
+  s.trainingAlternatives=(s.trainingAlternatives&&typeof s.trainingAlternatives==='object')?s.trainingAlternatives:{};
   s.journey=(s.journey&&typeof s.journey==='object')?s.journey:{startDate:null,daily:{}};
   s.journey.daily=(s.journey.daily&&typeof s.journey.daily==='object')?s.journey.daily:{};
   s.cardio=!!s.cardio;
@@ -90,6 +91,7 @@ function loadState(){
 }
 
 const state=loadState();
+window.state=state;
 
 /* Explicit Profile DOM references.
    Jangan memakai variabel global `name` karena browser memakai window.name. */
@@ -124,7 +126,7 @@ try{
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>openPage(b.dataset.p));
 function openPage(p){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.p===p));document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===p));refresh()}
 function saveProfile(){
-  const h=+height.value,w=+weight.value,a=+age.value,t=+target.value;
+  const h=+heightInput.value,w=+weightInput.value,a=+ageInput.value,t=+targetInput.value;
   if(!h||!w||!a)return alert('Isi usia, tinggi, dan berat.');
   const bmiV=w/(h/100)**2;
   const bmic=bmiV<18.5?'Underweight':bmiV<25?'Normal':bmiV<30?'Overweight':'Obesity';
@@ -154,7 +156,25 @@ function saveProfile(){
   bmiEl();
   refresh();
 }
-function bmiEl(){bmi.textContent=state.profile.bmi.toFixed(1);bmicat.textContent=state.profile.bmi<18.5?'Underweight':state.profile.bmi<25?'Normal':state.profile.bmi<30?'Overweight':'Obesity';const h=state.profile.height/100;ideal.textContent='Rentang BMI 18,5–24,9: '+(18.5*h*h).toFixed(1)+' – '+(24.9*h*h).toFixed(1)+' kg';calTarget.textContent=state.profile.cal;proTarget.textContent=state.profile.pro+' g';targetShow.textContent=state.profile.target+' kg'}
+function bmiEl(){
+  document.getElementById('bmi').textContent=state.profile.bmi.toFixed(1);
+  document.getElementById('bmicat').textContent=state.profile.bmi<18.5?'Underweight':state.profile.bmi<25?'Normal':state.profile.bmi<30?'Overweight':'Obesity';
+  const h=state.profile.height/100;
+  document.getElementById('ideal').textContent='Rentang BMI 18,5–24,9: '+(18.5*h*h).toFixed(1)+' – '+(24.9*h*h).toFixed(1)+' kg';
+  document.getElementById('calTarget').textContent=state.profile.cal;
+  document.getElementById('proTarget').textContent=state.profile.pro+' g';
+  document.getElementById('targetShow').textContent=state.profile.target+' kg';
+}
+function levelPrescription(level){
+  if(level==='Pemula'){
+    return {sets:2,reps:'8–12',rest:'60–90 dtk'};
+  }
+  if(level==='Menengah'){
+    return {sets:3,reps:'8–12',rest:'60–90 dtk'};
+  }
+  return {sets:3,reps:'6–10',rest:'90–120 dtk'};
+}
+
 function trainingLibrary(goal, equipment){
   const gym = equipment==='Gym lengkap';
   const dumb = equipment==='Dumbbell' || gym;
@@ -186,38 +206,148 @@ function trainingLibrary(goal, equipment){
     {name:'Strength B',ex:[common.hinge,common.shoulder,common.pull,common.core]},
     {name:'Strength C',ex:[common.squat,common.push,common.hinge,common.row]}
   ];
-  if(goal==='Maintain') return [
+  return [
     {name:'Full Body A',ex:[common.squat,common.push,common.row,common.hinge,common.core]},
     {name:'Full Body B',ex:[common.lunge,common.shoulder,common.pull,common.hinge,common.core]},
-    {name:'Full Body C',ex:[common.squat,common.push,common.row,common.lunge,common.core]}
-  ];
-  return [
-    {name:'General A',ex:[common.squat,common.push,common.row,common.core]},
-    {name:'General B',ex:[common.hinge,common.shoulder,common.pull,common.lunge,common.core]},
-    {name:'General C',ex:[common.squat,common.push,common.pull,common.core]}
+    {name:'Full Body C',ex:[common.squat,common.push,common.pull,common.lunge,common.core]}
   ];
 }
-function levelPrescription(level){
-  if(level==='Pemula') return {sets:2,reps:'8–12',rest:'60–90 detik'};
-  if(level==='Menengah') return {sets:3,reps:'8–12',rest:'60–90 detik'};
-  return {sets:4,reps:'6–10',rest:'90–120 detik'};
+
+function alternativeLibrary(eq){
+  const gym=eq==='Gym lengkap', dumb=eq==='Dumbbell'||gym, band=eq==='Resistance band'||gym;
+  return {
+    'Barbell Squat':gym?['Leg Press','Goblet Squat','Hack Squat']:[],
+    'Goblet Squat':dumb?['Dumbbell Split Squat','Step-up','Bodyweight Squat']:[],
+    'Bodyweight Squat':['Chair Squat','Box Squat','Supported Squat'],
+    'Romanian Deadlift':gym?['Cable Pull-through','Hip Thrust','Dumbbell Romanian Deadlift']:dumb?['Dumbbell Hip Hinge','Glute Bridge']:['Hip Hinge','Glute Bridge'],
+    'Dumbbell Romanian Deadlift':dumb?['Dumbbell Hip Hinge','Dumbbell Glute Bridge','Single-leg Glute Bridge']:[],
+    'Band Good Morning':band?['Band Pull-through','Band Glute Bridge','Hip Hinge']:[],
+    'Hip Hinge':['Glute Bridge','Single-leg Glute Bridge','Back Extension'],
+    'Bench Press':gym?['Chest Press Machine','Dumbbell Bench Press','Incline Press']:dumb?['Dumbbell Floor Press','Push-up']:['Incline Push-up','Push-up'],
+    'Dumbbell Floor Press':dumb?['Dumbbell Bench Press','Push-up','Incline Push-up']:[],
+    'Band Chest Press':band?['Band Standing Press','Incline Push-up','Wall Push-up']:[],
+    'Push Up':['Incline Push-up','Knee Push-up','Wall Push-up'],
+    'Lat Pulldown':gym?['Assisted Pull-up','Seated Cable Row','Chest-supported Row']:band?['Band Lat Pulldown','Band Row']:['Backpack Row'],
+    'Seated Cable Row':gym?['Chest-supported Row','Lat Pulldown','One-arm Cable Row']:[],
+    'Band Row':band?['Band Lat Pulldown','Band Face Pull','Backpack Row']:['Backpack Row'],
+    'One-arm Dumbbell Row':dumb?['Chest-supported Dumbbell Row','Dumbbell Row','Band Row']:[],
+    'Backpack Row':['Towel Row','Backpack Row','Band Row'],
+    'Overhead Press':gym?['Machine Shoulder Press','Dumbbell Shoulder Press','Landmine Press']:dumb?['Dumbbell Shoulder Press','Arnold Press']:['Pike Push-up','Wall Press'],
+    'Dumbbell Shoulder Press':dumb?['Arnold Press','Dumbbell Lateral Raise','Landmine Press']:[],
+    'Band Shoulder Press':band?['Band Lateral Raise','Band Face Pull','Wall Press']:[],
+    'Pike Push Up':['Wall Press','Incline Push-up','Knee Push-up'],
+    'Reverse Lunge':['Supported Reverse Lunge','Split Squat','Step-up'],
+    'Dumbbell Reverse Lunge':dumb?['Dumbbell Split Squat','Step-up','Supported Reverse Lunge']:[],
+    'Band Reverse Lunge':band?['Band Split Squat','Supported Reverse Lunge','Step-up']:[],
+    'Cable Curl':gym?['Dumbbell Curl','Cable Hammer Curl','Machine Curl']:[],
+    'Dumbbell Curl':dumb?['Hammer Curl','Alternating Curl','Band Curl']:[],
+    'Band Curl':band?['Band Hammer Curl','Dumbbell Curl']:[],
+    'Backpack Curl':['Band Curl','Isometric Curl'],
+    'Cable Triceps Pushdown':gym?['Overhead Cable Extension','Close-grip Chest Press','Dumbbell Extension']:[],
+    'Dumbbell Overhead Triceps Extension':dumb?['Dumbbell Kickback','Close-grip Push-up','Band Extension']:[],
+    'Band Triceps Extension':band?['Band Pushdown','Close-grip Push-up']:[],
+    'Close-grip Push Up':['Incline Close-grip Push-up','Knee Close-grip Push-up','Wall Push-up'],
+    'Plank':['Dead Bug','Bird Dog','Side Plank','Pallof Press']
+  };
 }
+
+function scheduleForDays(days){
+  const n=Math.max(2,Math.min(6,Number(days)||3));
+  const patterns={
+    2:[1,4],
+    3:[1,3,5],
+    4:[1,2,4,6],
+    5:[1,2,3,5,6],
+    6:[1,2,3,4,6,7]
+  };
+  return patterns[n]||patterns[3];
+}
+
+function currentScheduleStatus(day, days){
+  return scheduleForDays(days).includes(((day-1)%7)+1)?'training':'rest';
+}
+
 function renderTraining(){
-  if(!state.profile){ttitle.textContent='Buat profil terlebih dahulu';exercises.innerHTML='';return}
-  const p=state.profile, days=Math.max(2,Math.min(6,Number(p.days)||3)), duration=p.duration||'45 menit';
-  const prescription=levelPrescription(p.level), plans=trainingLibrary(p.goal,p.equipment);
-  const weekly=[]; for(let d=0;d<days;d++) weekly.push(plans[d%plans.length]);
+  const statusEl=document.getElementById('trainingProfileStatus');
+  if(!state.profile){
+    if(statusEl)statusEl.innerHTML='<b>Profil belum tersimpan.</b> Buka Profile, isi data, lalu tekan <b>Simpan Profil & Hitung</b>.';
+    ttitle.textContent='Buat profil terlebih dahulu';
+    exercises.innerHTML='';
+    return;
+  }
+  if(statusEl)statusEl.innerHTML='<b>Profil aktif:</b> '+esc(state.profile.name||'Pengguna')+' · '+esc(state.profile.goal)+' · '+esc(state.profile.level)+' · '+esc(state.profile.equipment)+' · '+state.profile.days+'x/minggu';
+  const p=state.profile;
+  const journeyDay=currentJourneyDay()||1;
+  const weekday=((journeyDay-1)%7)+1;
+  const days=Math.max(2,Math.min(6,Number(p.days)||3));
+  const duration=p.duration||'45 menit';
+  const status=currentScheduleStatus(journeyDay,days);
+  const prescription=levelPrescription(p.level);
+  const plans=trainingLibrary(p.goal,p.equipment);
+  const schedule=scheduleForDays(days);
+  const trainingIndex=Math.max(0,schedule.indexOf(weekday));
+  const session=plans[trainingIndex%plans.length];
   const exerciseCount=duration==='20 menit'?4:duration==='30 menit'?5:duration==='60 menit'?7:duration==='90 menit'?8:6;
-  ttitle.textContent=`${p.goal} · ${p.level} · ${days}x/minggu`;
-  exercises.innerHTML=`<div class="note" style="margin-bottom:12px"><b>Program personal kamu</b><br>Goal: ${esc(p.goal)} · Level: ${esc(p.level)} · ${days} hari/minggu · ${esc(duration)} · ${esc(p.equipment)}</div>`+
-    weekly.map((session,dayIndex)=>{const ex=session.ex.slice(0,exerciseCount);return `<div class="exercise" style="margin-bottom:10px"><div style="margin-bottom:8px"><b>Hari ${dayIndex+1} — ${esc(session.name)}</b></div>`+
-      ex.map((n,i)=>{const idx=dayIndex*8+i,checked=!!state.trainingChecks?.[idx];return `<div class="row" style="border:0;padding:7px 0"><div style="flex:1"><b>${esc(n)}</b><small>${prescription.sets} set · ${prescription.reps} reps · rest ${prescription.rest}</small></div><input class="check" type="checkbox" ${checked?'checked':''} onchange="setTrainingCheck(${idx},this.checked)"></div>`}).join('')+
-      `</div>`}).join('')+
-    `<div class="note"><b>Progression:</b> Jika semua set terasa terkontrol dengan teknik baik dan repetisi mencapai batas atas, naikkan beban secara bertahap pada sesi berikutnya. Jika teknik belum stabil, pertahankan beban dan fokus pada kualitas gerakan.</div>`;
+
+  if(status==='rest'){
+    ttitle.textContent=`Hari ${journeyDay} · Recovery / Rest`;
+    exercises.innerHTML=`
+      <div class="note">
+        <b>😴 Hari recovery</b><br>
+        Jadwal kamu adalah ${days}x latihan per minggu. Hari ini bukan hari latihan beban.
+        Fokus pada tidur, hidrasi, aktivitas ringan sesuai kemampuan, dan pemulihan.
+      </div>
+      <div class="exercise">
+        <b>Rekomendasi hari ini</b>
+        <small>• Jalan santai atau mobility ringan 10–30 menit bila nyaman<br>
+        • Prioritaskan tidur dan hidrasi<br>
+        • Jangan menambah volume latihan hanya karena merasa tertinggal</small>
+      </div>
+      <div class="note">Besok HarTrack akan menampilkan hari berikutnya secara otomatis.</div>`;
+    return;
+  }
+
+  const ex=session.ex.slice(0,exerciseCount);
+  ttitle.textContent=`Hari ${journeyDay} · ${session.name}`;
+  const alts=alternativeLibrary(p.equipment);
+  exercises.innerHTML=`
+    <div class="note" style="margin-bottom:12px">
+      <b>Program hari ini</b><br>
+      Goal: ${esc(p.goal)} · Level: ${esc(p.level)} · ${days}x/minggu · ${esc(duration)} · ${esc(p.equipment)}
+      <br><small>Hari latihan dipisahkan dengan recovery agar program tidak menumpuk.</small>
+    </div>
+    ${ex.map((n,i)=>{
+      const idx=(journeyDay*100)+i;
+      const key=String(idx);
+      const selected=state.trainingAlternatives?.[key]||n;
+      const options=[n,...(alts[n]||[])].filter((v,j,a)=>v&&a.indexOf(v)===j);
+      const checked=!!state.trainingChecks?.[idx];
+      return `<div class="exercise">
+        <div class="row" style="border:0;padding:0">
+          <div style="flex:1"><b>${esc(selected)}</b><small>${prescription.sets} set · ${prescription.reps} reps · rest ${prescription.rest}</small></div>
+          <input class="check" type="checkbox" ${checked?'checked':''} onchange="setTrainingCheck(${idx},this.checked)">
+        </div>
+        ${options.length>1?`<label class="muted" style="display:block;margin-top:8px">Alternatif gerakan
+          <select onchange="setTrainingAlternative('${key}',this.value)" style="width:100%;margin-top:4px;padding:8px;border:1px solid #e5e7eb;border-radius:10px">
+            ${options.map(v=>`<option value="${escAttr(v)}" ${selected===v?'selected':''}>${esc(v)}</option>`).join('')}
+          </select>
+        </label>`:''}
+      </div>`;
+    }).join('')}
+    <div class="note"><b>Progression:</b> Naikkan beban secara bertahap hanya bila teknik stabil dan repetisi terasa terkontrol. Alternatif gerakan tetap mempertahankan pola/tujuan utama latihan.</div>`;
+}
+
+function setTrainingAlternative(key,value){
+  state.trainingAlternatives=state.trainingAlternatives||{};
+  state.trainingAlternatives[key]=value;
+  save(); refresh();
 }
 function setTrainingCheck(index,checked){
-  state.trainingChecks=state.trainingChecks||{}; state.trainingChecks[index]=!!checked;
-  state.exercise=[0,1,2,3,4,5].map(i=>!!state.trainingChecks[i]); save(); refresh();
+  state.trainingChecks=state.trainingChecks||{};
+  state.trainingChecks[index]=!!checked;
+  // Preserve legacy dashboard counters.
+  state.exercise=[0,1,2,3,4,5].map(i=>!!state.trainingChecks[i]);
+  save(); refresh();
 }
 function addFood(){
   const c=+fc.value||0;
@@ -486,118 +616,113 @@ function generateCoach(){
   const entries=Object.values(state.journey.daily||{}).sort((a,b)=>a.date.localeCompare(b.date));
   const recent=entries.slice(-7);
   const p=state.profile;
+  let advice=[];
+  let priority='Pertahankan konsistensi';
 
   const avg=(key)=>{
     const vals=recent.map(x=>Number(x[key])).filter(Number.isFinite);
     return vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0;
   };
+  const avgCal=avg('calories'), avgPro=avg('protein'), avgCompletion=avg('completion'), avgExercise=avg('exercise');
+  const rest=(typeof getHarTrackRestData==='function')?getHarTrackRestData():null;
+  const sleep=rest?Number(rest.hours||0):0;
+  const recovery=rest?.recovery||'';
+  const quality=rest?.quality||'';
 
-  const avgCal=avg('calories');
-  const avgPro=avg('protein');
-  const avgCompletion=avg('completion');
-  const avgExercise=avg('exercise');
-  const avgCardio=avg('cardio');
+  // Training readiness.
+  if(sleep>0 && sleep<6){
+    priority='Prioritas: recovery';
+    advice.push('Tidur terakhir hanya '+sleep.toFixed(1)+' jam. Pertahankan sesi sesuai jadwal tetapi gunakan volume/intensitas lebih konservatif bila tubuh terasa lelah.');
+  }else if(sleep>=7){
+    advice.push('Durasi tidur terakhir '+sleep.toFixed(1)+' jam. Recovery dasar terlihat lebih mendukung sesi sesuai jadwal.');
+  }
+  if(/lelah|sangat lelah/i.test(recovery)){
+    priority='Prioritas: recovery';
+    advice.push('Kamu mencatat recovery rendah. Jangan mengejar volume; fokus pada teknik dan pemulihan.');
+  }
 
-  let advice=[];
-  let priority='Pertahankan konsistensi';
-
+  // Nutrition adaptation.
   if(p.goal==='Fat Loss'){
-    if(avgCal>p.cal*1.1) advice.push('Rata-rata kalori 7 hari terakhir berada di atas target. Fokus pada porsi dan konsistensi pencatatan makanan sebelum mengubah target kalori.');
+    if(avgCal>p.cal*1.1) advice.push('Rata-rata kalori 7 hari terakhir berada di atas target. Fokus pada porsi dan konsistensi pencatatan sebelum mengubah target.');
     else if(avgCal>0&&avgCal<p.cal*0.8) advice.push('Rata-rata kalori cukup jauh di bawah target. Hindari memangkas asupan terlalu agresif; prioritaskan pola makan yang konsisten.');
-    else advice.push('Asupan kalori relatif dekat dengan target. Pertahankan konsistensi dan gunakan tren berat mingguan, bukan satu hari, untuk evaluasi.');
-  } else if(p.goal==='Muscle Gain'){
-    if(avgCal>0&&avgCal<p.cal*0.9) advice.push('Rata-rata kalori masih di bawah target. Pastikan porsi dan frekuensi makan cukup untuk mendukung target latihan.');
-    else advice.push('Asupan energi relatif dekat dengan target. Pertahankan konsistensi sambil memantau progres latihan dan berat.');
-  } else {
+    else advice.push('Asupan kalori relatif dekat dengan target. Gunakan tren mingguan untuk evaluasi.');
+  }else if(p.goal==='Muscle Gain'){
+    if(avgCal>0&&avgCal<p.cal*0.9) advice.push('Rata-rata kalori masih di bawah target. Pastikan makan cukup untuk mendukung latihan.');
+    else advice.push('Asupan energi relatif dekat dengan target. Pertahankan konsistensi sambil memantau performa.');
+  }else{
     advice.push('Gunakan target kalori sebagai panduan dan pertahankan pola makan yang konsisten.');
   }
 
   if(avgPro>0 && avgPro<p.pro*0.85){
-    advice.push('Protein rata-rata masih di bawah target profil. Tambahkan sumber protein pada beberapa waktu makan.');
-  } else if(avgPro>0){
+    priority=priority==='Prioritas: recovery'?priority:'Prioritas: nutrisi';
+    advice.push('Protein rata-rata masih di bawah target profil. Tambahkan sumber protein seperti telur, ikan, ayam, tahu, atau tempe pada makan berikutnya.');
+  }else if(avgPro>0){
     advice.push('Protein rata-rata sudah mendekati target profil.');
   }
 
   if(avgCompletion<60 && recent.length>=3){
     priority='Prioritas: konsistensi';
-    advice.push('Completion beberapa hari terakhir masih rendah. Mulai dari sesi yang realistis dan pertahankan jadwal.');
-  } else if(avgExercise<3 && recent.length>=3){
-    priority='Prioritas: latihan';
-    advice.push('Volume latihan yang tercatat masih rendah. Ikuti sesi sesuai jadwal tanpa menambah volume secara mendadak.');
-  } else if(avgCardio<10 && recent.length>=3){
-    priority='Prioritas: aktivitas';
-    advice.push('Cardio yang tercatat masih terbatas. Jika sesuai kondisi dan programmu, tambahkan aktivitas ringan secara bertahap.');
-  } else {
-    advice.push('Konsistensi latihan terlihat cukup baik dari data yang tersimpan.');
+    advice.push('Completion beberapa hari terakhir masih rendah. Ikuti jadwal harian tanpa mencoba mengganti beberapa sesi sekaligus.');
+  }else if(avgExercise<3 && recent.length>=3){
+    priority=priority==='Prioritas: recovery'?priority:'Prioritas: latihan';
+    advice.push('Volume latihan yang tercatat masih rendah. Ikuti sesi sesuai jadwal dan manfaatkan hari rest.');
   }
 
-  // Trend berat: bandingkan data tertua dan terbaru yang punya berat.
-  const weights=entries.filter(x=>Number.isFinite(Number(x.weight))&&Number(x.weight)>0);
-  let weightText='Belum cukup data untuk membaca tren berat.';
-  if(weights.length>=2){
-    const first=weights[0], last=weights[weights.length-1];
-    const delta=Number(last.weight)-Number(first.weight);
-    weightText=`Tren berat sejak ${formatDate(first.date)}: ${round(delta,1)} kg (${Number(first.weight).toFixed(1)} → ${Number(last.weight).toFixed(1)} kg).`;
-    if(p.goal==='Fat Loss' && delta<0) advice.push('Tren berat bergerak turun. Evaluasi menggunakan tren beberapa minggu, bukan perubahan harian.');
-    if(p.goal==='Muscle Gain' && delta>0) advice.push('Tren berat bergerak naik. Pantau juga performa latihan agar perubahan berat dibaca bersama progres latihan.');
+  if(recent.length>=2){
+    const latest=recent[recent.length-1];
+    if(latest.exercise>=4 && sleep>0 && sleep<6){
+      advice.push('Latihan terakhir cukup aktif sementara tidur rendah. Hari recovery berikutnya sebaiknya benar-benar digunakan untuk pemulihan.');
+    }
   }
+
+  const scheduleStatus=currentScheduleStatus(currentJourneyDay()||1,p.days);
+  const todayPlan=scheduleStatus==='rest'?'Recovery / Rest':'Training';
+  const nextFood=avgPro>0&&avgPro<p.pro*0.85
+    ? 'Pilihan makan berikutnya: sumber protein + sayur/buah, misalnya nasi secukupnya dengan ikan/ayam + sayur.'
+    : 'Pilihan makan berikutnya: pertahankan porsi seimbang antara protein, sumber karbohidrat, sayur/buah, dan air putih.';
 
   box.innerHTML=`
     <div class="metrics">
       <div class="metric"><b>${recent.length}</b><span>hari dianalisis</span></div>
       <div class="metric"><b>${avgCal?Math.round(avgCal):'—'}</b><span>avg kcal</span></div>
       <div class="metric"><b>${avgPro?Math.round(avgPro):'—'} g</b><span>avg protein</span></div>
-      <div class="metric"><b>${recent.length?Math.round(avgCompletion):'—'}%</b><span>avg completion</span></div>
+      <div class="metric"><b>${sleep?sleep.toFixed(1):'—'}</b><span>jam tidur terakhir</span></div>
     </div>
-    <div class="note" style="margin-top:10px"><b>${priority}</b><br>${weightText}</div>`;
+    <div class="note" style="margin-top:10px"><b>${priority}</b><br>Hari ini: ${todayPlan} · ${quality||'kualitas tidur belum diisi'}</div>`;
 
-  plan.innerHTML=`<div class="result"><b>Rekomendasi Coach</b><ul style="margin:8px 0 0 18px">${advice.map(x=>`<li style="margin:6px 0">${esc(x)}</li>`).join('')}</ul></div>`;
+  plan.innerHTML=`
+    <div class="result">
+      <b>🤖 Rekomendasi Coach</b>
+      <ul style="margin:8px 0 0 18px">${advice.map(x=>'<li>'+esc(x)+'</li>').join('')}</ul>
+      <div class="note" style="margin-top:10px"><b>🍽️ Saran makanan</b><br>${esc(nextFood)}</div>
+      <div class="note" style="margin-top:10px"><b>📅 Pengaturan latihan</b><br>HarTrack otomatis memisahkan hari latihan dan recovery berdasarkan frekuensi ${p.days||3}x/minggu. Program hari berikutnya akan menyesuaikan data recovery dan feedback yang tersimpan.</div>
+    </div>`;
 }
 
 function renderJourney(){
-  if(!state.journey.startDate){
-    startDate.textContent='Belum dimulai';
-    journeyDay.textContent='—';
-    journeyTimeline.innerHTML='<div class="muted">Simpan profil untuk memulai Journey.</div>';
-    review30.textContent=review60.textContent=review90.textContent=review180.textContent='Belum';
-    reviewDetails.innerHTML='';
+  const start=document.getElementById('startDate');
+  const dayEl=document.getElementById('journeyDay');
+  const timeline=document.getElementById('journeyTimeline');
+  const r30=document.getElementById('review30'),r60=document.getElementById('review60'),r90=document.getElementById('review90'),r180=document.getElementById('review180');
+  const details=document.getElementById('reviewDetails');
+  if(!state.profile||!state.journey.startDate){
+    if(start)start.textContent='—'; if(dayEl)dayEl.textContent='—'; if(timeline)timeline.innerHTML='';
     return;
   }
-  const day=currentJourneyDay();
-  startDate.textContent=formatDate(state.journey.startDate);
-  journeyDay.textContent='Day '+day;
-
-  const milestones=[30,60,90,180];
-  milestones.forEach(n=>{
-    const el=document.getElementById('review'+n);
-    el.textContent=day>=n?'Tersedia':'Day '+n;
-  });
-
-  const entries=Object.values(state.journey.daily).sort((a,b)=>a.date.localeCompare(b.date));
-  const recent=entries.slice(-7).reverse();
-  journeyTimeline.innerHTML=recent.length?recent.map(x=>`
-    <div class="row">
-      <div><b>Day ${x.day} · ${formatDate(x.date)}</b>
-      <div class="muted">Berat ${x.weight??'—'} kg · ${x.calories} kcal · Protein ${x.protein} g · Workout ${x.exercise}/6 · Cardio ${x.cardio} min</div></div>
-      <b>${x.completion}%</b>
-    </div>`).join(''):'Belum ada data harian.';
-
-  let details='';
-  milestones.forEach(n=>{
-    if(day>=n){
-      const key=dateFromKey(state.journey.startDate);
-      key.setDate(key.getDate()+n-1);
-      const targetKey=key.toISOString().slice(0,10);
-      const target=state.journey.daily[targetKey];
-      const start=state.journey.daily[state.journey.startDate];
-      details+=`<div class="result"><b>Evaluasi Day ${n}</b><div class="muted">Tanggal evaluasi: ${formatDate(targetKey)}</div>
-      ${target?`<div style="margin-top:7px">Berat: <b>${target.weight??'—'} kg</b> · Kalori: <b>${target.calories}</b> kcal · Protein: <b>${target.protein} g</b> · Workout: <b>${target.exercise}/6</b></div>`
-      :`<div class="muted" style="margin-top:7px">Tanggal evaluasi sudah tercapai, tetapi belum ada data yang disimpan pada tanggal tersebut.</div>`}
-      ${start&&target&&start.weight&&target.weight?`<div class="muted">Perubahan berat dari Day 1: <b>${round(target.weight-start.weight,1)} kg</b></div>`:''}
-      </div>`;
-    }
-  });
-  reviewDetails.innerHTML=details||'<div class="muted">Evaluasi akan muncul saat milestone tercapai.</div>';
+  const day=currentJourneyDay()||1;
+  if(start)start.textContent=state.journey.startDate;
+  if(dayEl)dayEl.textContent='Hari '+day;
+  const days=Math.max(2,Math.min(6,Number(state.profile.days)||3));
+  const items=[];
+  for(let i=Math.max(1,day-3);i<=day+3;i++){
+    const weekday=((i-1)%7)+1;
+    const status=scheduleForDays(days).includes(weekday)?'Training':'Recovery';
+    items.push('<div class="row"><span>Hari '+i+'</span><b>'+status+'</b></div>');
+  }
+  if(timeline)timeline.innerHTML=items.join('');
+  const mark=(n)=>day>=n?'Tersedia':'Belum';
+  if(r30)r30.textContent=mark(30); if(r60)r60.textContent=mark(60); if(r90)r90.textContent=mark(90); if(r180)r180.textContent=mark(180);
+  if(details)details.innerHTML=day>=30?'<div class="note">Evaluasi dapat dilakukan berdasarkan data makanan, latihan, tidur, dan berat yang tersimpan.</div>':'<div class="muted">Evaluasi otomatis akan tersedia setelah perjalanan mencapai Day 30.</div>';
 }
 
 function refresh(){
@@ -629,292 +754,84 @@ function refresh(){
   [['bp',pp,'pp'],['bc',cp,'cp'],['bf',fp,'fp'],['bw',wp,'wp']].forEach(x=>{document.getElementById(x[0]).style.width=x[1]+'%';document.getElementById(x[2]).textContent=Math.round(x[1])+'%'});
   renderFoods();
   drinks.innerHTML=state.drinks.length?state.drinks.map(x=>x.type+' — '+x.ml+' ml').join('<br>'):'Belum ada.';
-  daylist.innerHTML=`<div class="row"><span>🍽️ Nutrition</span><b>${nutrition}%</b></div><div class="row"><span>🏋️ Strength</span><b>${done}/6</b></div><div class="row"><span>🏃 Cardio</span><b>${state.cardio?'✓ 20 min':'—'}</b></div>`;
+  const jd=currentJourneyDay()||1, schedStatus=currentScheduleStatus(jd,state.profile?.days||3); daylist.innerHTML=`<div class="row"><span>📅 Journey</span><b>Day ${jd}</b></div><div class="row"><span>🍽️ Nutrition</span><b>${nutrition}%</b></div><div class="row"><span>🏋️ Today</span><b>${schedStatus==='training'?'Training':'Recovery'}</b></div><div class="row"><span>🏃 Cardio</span><b>${state.cardio?'✓ 20 min':'—'}</b></div>`;
   document.getElementById('score').textContent=score+'%';pex.textContent=done;pcardio.textContent=state.cardio?20:0;pmin.textContent=(done*8)+(state.cardio?20:0);
-  history.innerHTML=state.history.length?state.history.map(x=>`<div class="row"><div><b>${x.date}</b><div class="muted">${x.exercise} exercise · ${x.cardio?'20 min cardio':'tanpa cardio'}${x.note?' · '+x.note:''}</div></div></div>`).join(''):'Belum ada sesi tersimpan.';
+  document.getElementById('history').innerHTML=state.history.length?state.history.map(x=>`<div class="row"><div><b>${x.date}</b><div class="muted">${x.exercise} exercise · ${x.cardio?'20 min cardio':'tanpa cardio'}${x.note?' · '+x.note:''}</div></div></div>`).join(''):'Belum ada sesi tersimpan.';
   renderTraining();renderJourney();if(state.profile)generateCoach();if(state.profile){document.getElementById('presult').classList.remove('hide');bmiEl()}
 }
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]) )}
-refresh();
+
+function resetProgressHarTrack(){
+  if(!window.confirm('Reset Progress?\n\nSemua progress makanan, latihan, Rest Time, feedback, riwayat dan journey akan dihapus.\nProfil tetap dipertahankan.\n\nLanjutkan?')) return;
+  const profile=state.profile?JSON.parse(JSON.stringify(state.profile)):null;
+  state.foods=[]; state.drinks=[]; state.exercise=[false,false,false,false,false,false]; state.cardio=false;
+  state.history=[]; state.trainingChecks={}; state.trainingAlternatives={};
+  state.journey={startDate:todayKey(),daily:{}}; state.profile=profile;
+  ['hartrack_rest_time','hartrack_rest_time_v1','hartrack_rest_time_v2','hartrack_rest_time_v3','hartrack_adaptive_training_v1','hartrack_feedback','hartrack_coach','hartrack_history','hartrack_training_history'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
+  save();
+  window.location.reload();
+}
+function resetAllHarTrack(){
+  if(!window.confirm('Reset Semua Data?\n\nProfil, makanan, latihan, Rest Time, feedback, riwayat dan seluruh progress akan dihapus.\n\nTindakan ini tidak dapat dibatalkan.\n\nLanjutkan?')) return;
+  try{localStorage.clear()}catch(e){} try{sessionStorage.clear()}catch(e){}
+  state.profile=null; state.foods=[]; state.drinks=[]; state.exercise=[false,false,false,false,false,false]; state.cardio=false;
+  state.history=[]; state.trainingChecks={}; state.trainingAlternatives={}; state.journey={startDate:null,daily:{}};
+  window.location.replace(window.location.href.split('#')[0]);
+}
+window.resetProgressHarTrack=resetProgressHarTrack;
+window.resetAllHarTrack=resetAllHarTrack;
+try{refresh();}catch(e){console.error('HarTrack initial render error:',e);}
 </script>
-<script>
-(function(){
-  const AT_KEY = 'hartrack_adaptive_training_v1';
-
-  function atEsc(v){
-    return String(v ?? '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
-  }
-
-  function atProfile(){
-    return (window.state && window.state.profile) ? window.state.profile : null;
-  }
-
-  function normalizeGoal(g){
-    const x=String(g||'').toLowerCase();
-    if(x.includes('fat') || x.includes('loss') || x.includes('turun')) return 'fat_loss';
-    if(x.includes('muscle') || x.includes('gain') || x.includes('massa')) return 'muscle_gain';
-    if(x.includes('strength') || x.includes('kekuatan')) return 'strength';
-    if(x.includes('maintain') || x.includes('maintain')) return 'maintain';
-    return 'general';
-  }
-
-  function bmiBand(p){
-    const h=Number(p?.height||p?.tinggi||0)/100;
-    const w=Number(p?.weight||p?.berat||0);
-    if(!h || !w) return 'unknown';
-    const bmi=w/(h*h);
-    if(bmi<18.5) return 'under';
-    if(bmi<25) return 'normal';
-    if(bmi<30) return 'over';
-    if(bmi<35) return 'obese1';
-    if(bmi<40) return 'obese2';
-    return 'obese3';
-  }
-
-  function equipment(p){
-    return String(p?.equipment||p?.alat||'Bodyweight');
-  }
-
-  const pools={
-    bodyweight:{
-      squat:['Chair Squat','Bodyweight Squat','Box Squat'],
-      hinge:['Glute Bridge','Hip Hinge','Single-leg Glute Bridge'],
-      push:['Wall Push-up','Incline Push-up','Knee Push-up','Push-up'],
-      pull:['Backpack Row','Towel Row'],
-      lunge:['Supported Reverse Lunge','Reverse Lunge','Split Squat'],
-      shoulder:['Wall Press','Pike Push-up'],
-      core:['Dead Bug','Bird Dog','Plank','Side Plank']
-    },
-    dumbbell:{
-      squat:['Goblet Squat','Dumbbell Squat','Dumbbell Split Squat'],
-      hinge:['Dumbbell Romanian Deadlift','Dumbbell Hip Hinge','Dumbbell Glute Bridge'],
-      push:['Dumbbell Floor Press','Dumbbell Bench Press','Neutral-grip Dumbbell Press'],
-      pull:['One-arm Dumbbell Row','Chest-supported Dumbbell Row','Dumbbell Row'],
-      lunge:['Dumbbell Reverse Lunge','Dumbbell Split Squat','Step-up'],
-      shoulder:['Dumbbell Shoulder Press','Dumbbell Arnold Press','Dumbbell Lateral Raise'],
-      core:['Dead Bug','Plank','Suitcase Carry','Side Plank']
-    },
-    band:{
-      squat:['Band Squat','Band Box Squat','Band Split Squat'],
-      hinge:['Band Good Morning','Band Pull-through','Band Glute Bridge'],
-      push:['Band Chest Press','Band Standing Press','Incline Push-up'],
-      pull:['Band Row','Band Lat Pulldown','Band Face Pull'],
-      lunge:['Band Reverse Lunge','Band Split Squat','Supported Reverse Lunge'],
-      shoulder:['Band Shoulder Press','Band Lateral Raise','Band Face Pull'],
-      core:['Pallof Press','Dead Bug','Plank','Bird Dog']
-    },
-    gym:{
-      squat:['Leg Press','Goblet Squat','Barbell Squat','Hack Squat'],
-      hinge:['Romanian Deadlift','Cable Pull-through','Hip Thrust'],
-      push:['Chest Press Machine','Dumbbell Bench Press','Bench Press','Incline Press'],
-      pull:['Lat Pulldown','Seated Cable Row','Chest-supported Row'],
-      lunge:['Reverse Lunge','Split Squat','Step-up'],
-      shoulder:['Machine Shoulder Press','Dumbbell Shoulder Press','Cable Lateral Raise'],
-      core:['Cable Pallof Press','Plank','Dead Bug','Cable Crunch']
-    }
-  };
-
-  function poolKey(eq){
-    const x=eq.toLowerCase();
-    if(x.includes('gym')) return 'gym';
-    if(x.includes('dumb')) return 'dumbbell';
-    if(x.includes('band')) return 'band';
-    return 'bodyweight';
-  }
-
-  function choose(pool, seed){
-    const arr=pool||[];
-    if(!arr.length) return '';
-    return arr[Math.abs(seed)%arr.length];
-  }
-
-  function readInputs(){
-    const g=id=>document.getElementById(id);
-    return {
-      sleep:Number(g('sleepHours')?.value||0),
-      recovery:g('recoveryLevel')?.value||'normal',
-      feedback:g('lastWorkoutFeedback')?.value||'',
-      pain:g('painLevel')?.value||'none'
-    };
-  }
-
-  function loadAdaptive(){
-    try{return JSON.parse(localStorage.getItem(AT_KEY)||'{}')}catch(e){return {}}
-  }
-
-  function saveAdaptive(x){
-    localStorage.setItem(AT_KEY,JSON.stringify(x));
-  }
-
-  function buildPlan(){
-    const p=atProfile();
-    if(!p) return {error:'Buat profil terlebih dahulu.'};
-
-    const input=readInputs();
-    const band=bmiBand(p);
-    const eq=equipment(p);
-    const pool=pools[poolKey(eq)];
-    const goal=normalizeGoal(p.goal);
-    const level=String(p.level||'Pemula');
-    const days=Math.max(2,Math.min(6,Number(p.days)||3));
-    const duration=String(p.duration||'45 menit');
-    const seed=Date.now();
-
-    // Conservative readiness layer.
-    let readiness='ready', caution=[];
-    if(input.pain==='severe'){
-      readiness='recovery';
-      caution.push('Keluhan/nyeri berat dilaporkan. Hari ini sebaiknya tidak melakukan sesi latihan berat dan pertimbangkan evaluasi tenaga kesehatan.');
-    } else if(input.pain==='moderate'){
-      readiness='light';
-      caution.push('Keluhan sedang dilaporkan. Program diturunkan menjadi low-impact dan hindari gerakan yang memicu nyeri.');
-    }
-
-    if(input.sleep>0 && input.sleep<5){
-      readiness=readiness==='ready'?'light':readiness;
-      caution.push('Tidur sangat singkat. Intensitas dan volume diturunkan.');
-    } else if(input.sleep>0 && input.sleep<6){
-      readiness=readiness==='ready'?'light':readiness;
-      caution.push('Tidur kurang. Sesi dibuat lebih konservatif.');
-    }
-
-    if(['tired','very_tired'].includes(input.recovery)){
-      readiness=readiness==='ready'?'light':readiness;
-      caution.push('Recovery rendah. Fokus pada kualitas gerakan dan volume lebih ringan.');
-    }
-
-    if(input.feedback==='too_hard' || input.feedback==='hard'){
-      readiness=readiness==='ready'?'light':readiness;
-      caution.push('Latihan terakhir terasa berat. Jangan menaikkan beban secara agresif.');
-    }
-
-    // Higher body mass is a modifier, not a diagnosis or sole selector.
-    const impactSensitive=['obese1','obese2','obese3'].includes(band);
-    if(impactSensitive && level.toLowerCase().includes('pemula')){
-      caution.push('Profil menunjukkan BMI tinggi dan level pemula. Program memprioritaskan low-impact, toleransi aktivitas, dan progres bertahap.');
-    }
-
-    let sets = level.toLowerCase().includes('lanjut') ? 4 : level.toLowerCase().includes('menengah') ? 3 : 2;
-    let reps = level.toLowerCase().includes('lanjut') ? '6–10' : '8–12';
-    let rest = level.toLowerCase().includes('lanjut') ? '90–120 detik' : '60–90 detik';
-
-    if(readiness==='light'){sets=Math.max(1,sets-1); reps='8–10'; rest='75–120 detik';}
-    if(readiness==='recovery'){sets=0;}
-
-    const baseCount = duration.includes('20')?3:duration.includes('30')?4:duration.includes('60')?6:duration.includes('90')?7:5;
-    const count = readiness==='light'?Math.min(baseCount,4):baseCount;
-
-    let patterns;
-    if(goal==='muscle_gain'){
-      patterns=['squat','push','pull','hinge','shoulder','core'];
-    } else if(goal==='strength'){
-      patterns=['squat','push','hinge','pull','core'];
-    } else if(goal==='fat_loss'){
-      patterns=['squat','push','pull','hinge','core'];
-    } else {
-      patterns=['squat','hinge','push','pull','core'];
-    }
-
-    // Impact-sensitive beginner: prefer supported/low-impact movement choices.
-    if(impactSensitive && level.toLowerCase().includes('pemula')){
-      patterns=['squat','hinge','push','pull','core'];
-    }
-
-    const exercises=patterns.slice(0,count).map((pattern,i)=>({
-      pattern,
-      name:choose(pool[pattern],i+seed%7)
-    }));
-
-    // If recovery is poor, make a recovery session instead of forcing strength work.
-    if(readiness==='recovery'){
-      return {
-        title:'Recovery Day',
-        subtitle:'Hari ini fokus pemulihan',
-        duration:'15–30 menit',
-        sets:0,
-        reps:'ringan',
-        rest:'sesuai kebutuhan',
-        exercises:[
-          {pattern:'mobility',name:'Jalan santai / mobility ringan'},
-          {pattern:'breathing',name:'Pernapasan diafragma 5 menit'}
-        ],
-        caution
-      };
-    }
-
-    return {
-      title: goal==='muscle_gain'?'Muscle Gain — Adaptive':goal==='fat_loss'?'Fat Loss — Adaptive':goal==='strength'?'Strength — Adaptive':'General Fitness — Adaptive',
-      subtitle:`${level} · ${eq} · ${days}x/minggu · ${duration}`,
-      duration,
-      sets,reps,rest,exercises,caution,
-      meta:{goal,band,readiness,sleep:input.sleep,recovery:input.recovery,feedback:input.feedback}
-    };
-  }
-
-  window.generateAdaptiveTraining=function(){
-    const result=buildPlan();
-    const el=document.getElementById('adaptiveTrainingResult');
-    if(!el) return;
-    if(result.error){el.innerHTML='<div class="note">'+atEsc(result.error)+'</div>';return;}
-
-    const saved=loadAdaptive();
-    saved.today=result;
-    saved.updatedAt=new Date().toISOString();
-    saveAdaptive(saved);
-
-    el.innerHTML=`
-      <div class="card" style="border:1px solid rgba(255,255,255,.12)">
-        <h3 style="margin-top:0">${atEsc(result.title)}</h3>
-        <p class="muted">${atEsc(result.subtitle)}</p>
-        ${result.meta?`<p><b>Readiness:</b> ${atEsc(result.meta.readiness)} · <b>Sleep:</b> ${result.meta.sleep||'-'} jam</p>`:''}
-        <div style="display:grid;gap:8px">
-          ${result.exercises.map((x,i)=>`
-            <div class="row">
-              <div style="flex:1"><b>${i+1}. ${atEsc(x.name)}</b><small>${atEsc(x.pattern)} · ${result.sets||'—'} set · ${atEsc(result.reps)} · rest ${atEsc(result.rest)}</small></div>
-            </div>`).join('')}
-        </div>
-        ${result.caution?.length?`<div class="note" style="margin-top:12px"><b>Catatan adaptif</b><br>${result.caution.map(x=>'• '+atEsc(x)).join('<br>')}</div>`:''}
-        <div class="note" style="margin-top:12px"><b>Feedback setelah latihan</b><br>Catat apakah sesi terasa mudah, pas, menantang, berat, atau terlalu berat agar sesi berikutnya bisa disesuaikan.</div>
-      </div>`;
-  };
-
-  window.recordAdaptiveFeedback=function(feedback){
-    const x=loadAdaptive();
-    x.lastFeedback=feedback;
-    x.updatedAt=new Date().toISOString();
-    saveAdaptive(x);
-  };
-})();
-</script>
-
 <script>
 (function(){
   const KEY='hartrack_rest_time';
   const $=id=>document.getElementById(id);
   function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return {}}}
   function store(x){localStorage.setItem(KEY,JSON.stringify(x))}
-  function hours(a,b){if(!a||!b)return 0;let x=a.split(':').map(Number),y=b.split(':').map(Number);let s=x[0]*60+x[1],w=y[0]*60+y[1];if(w<=s)w+=1440;return (w-s)/60}
+  function hours(a,b){
+    if(!a||!b)return 0;
+    const x=a.split(':').map(Number),y=b.split(':').map(Number);
+    let s=x[0]*60+x[1],w=y[0]*60+y[1]; if(w<=s)w+=1440;
+    return (w-s)/60;
+  }
   function render(){
     const d=load(),x=d.latest;
+    const dashH=$('restDashHours'),dashQ=$('restDashQuality'),dashE=$('restDashEnough');
     if(x){
-      $('restSleep').value=x.sleep||''; $('restWake').value=x.wake||''; $('restQuality').value=x.quality||''; $('restRecovery').value=x.recovery||''; $('restComplaint').value=x.complaint||'';
-      $('restDashHours').textContent=x.hours.toFixed(1);
-      $('restDashQuality').textContent=x.quality||'—';
-      $('restDashEnough').textContent=x.hours>=7?'Cukup':'Kurang';
-      $('restResult').classList.remove('hide');
-      $('restResult').innerHTML='<b>'+ (x.hours>=7?'🟢 Tidur cukup':'🟡 Tidur belum cukup') +'</b><br>'+x.hours.toFixed(1)+' jam · '+(x.quality||'kualitas belum diisi')+(x.complaint?' · Keluhan: '+x.complaint:'');
+      if($('restSleep'))$('restSleep').value=x.sleep||'';
+      if($('restWake'))$('restWake').value=x.wake||'';
+      if($('restQuality'))$('restQuality').value=x.quality||'';
+      if($('restRecovery'))$('restRecovery').value=x.recovery||'';
+      if($('restComplaint'))$('restComplaint').value=x.complaint||'';
+      if(dashH)dashH.textContent=Number(x.hours).toFixed(1);
+      if(dashQ)dashQ.textContent=x.quality||'—';
+      if(dashE)dashE.textContent=Number(x.hours)>=7?'Cukup':'Kurang';
+      if($('restResult')){
+        $('restResult').classList.remove('hide');
+        $('restResult').innerHTML='<b>'+(Number(x.hours)>=7?'🟢 Tidur cukup':'🟡 Tidur belum cukup')+'</b><br>'+Number(x.hours).toFixed(1)+' jam · '+(x.quality||'kualitas belum diisi')+(x.complaint?' · Keluhan: '+esc(x.complaint):'');
+      }
+    }else{
+      if(dashH)dashH.textContent='—';if(dashQ)dashQ.textContent='—';if(dashE)dashE.textContent='—';
     }
     const rows=d.history||[];
-    $('restHistory').innerHTML=rows.length?rows.map(x=>'<div class="row"><div><b>'+x.date+'</b><div class="muted">'+x.sleep+' → '+x.wake+' · '+(x.quality||'—')+'</div></div><b>'+x.hours.toFixed(1)+' jam</b></div>').join(''):'Belum ada data.';
+    if($('restHistory'))$('restHistory').innerHTML=rows.length?rows.map(x=>'<div class="row"><div><b>'+x.date+'</b><div class="muted">'+x.sleep+' → '+x.wake+' · '+(x.quality||'—')+'</div></div><b>'+Number(x.hours).toFixed(1)+' jam</b></div>').join(''):'Belum ada data.';
   }
   window.saveRestTime=function(){
-    const sleep=$('restSleep').value,wake=$('restWake').value;
+    const sleep=$('restSleep')?.value,wake=$('restWake')?.value;
     if(!sleep||!wake){alert('Isi jam mulai tidur dan jam bangun terlebih dahulu.');return;}
-    const d=load(),item={date:new Date().toISOString().slice(0,10),sleep,wake,hours:hours(sleep,wake),quality:$('restQuality').value,recovery:$('restRecovery').value,complaint:$('restComplaint').value};
-    d.history=(d.history||[]).filter(x=>x.date!==item.date);d.history.unshift(item);d.history=d.history.slice(0,30);d.latest=item;store(d);render();
+    const d=load(),item={date:todayKey(),sleep,wake,hours:hours(sleep,wake),quality:$('restQuality')?.value||'',recovery:$('restRecovery')?.value||'',complaint:$('restComplaint')?.value||''};
+    d.history=(d.history||[]).filter(x=>x.date!==item.date);
+    d.history.unshift(item);d.history=d.history.slice(0,30);d.latest=item;store(d);
+    render();
+    if(typeof generateCoach==='function')generateCoach();
   };
   window.getHarTrackRestData=function(){return load().latest||null};
-  document.addEventListener('DOMContentLoaded',render);
+  window.renderHarTrackRest=render;
+  render();
 })();
 </script>
+
+
+
+
 </body></html>
