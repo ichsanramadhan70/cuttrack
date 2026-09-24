@@ -1,5 +1,3 @@
-const OpenAI = require("openai");
-
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -16,26 +14,30 @@ module.exports = async (req, res) => {
       });
     }
 
-    if (!process.env.OPENAI_API_KEY) {
+    if (!process.env.GEMINI_API_KEY) {
       return res.status(500).json({
-        error: "OPENAI_API_KEY belum dipasang di Vercel."
+        error: "GEMINI_API_KEY belum dipasang di Vercel."
       });
     }
 
-    const client = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
-    });
+    /*
+     * Image dari frontend berbentuk:
+     * data:image/jpeg;base64,XXXXX
+     *
+     * Kita pisahkan MIME type dan data base64.
+     */
+    const match = image.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
 
-    const response = await client.responses.create({
-      model: process.env.OPENAI_MODEL || "gpt-5.6-luna",
+    if (!match) {
+      return res.status(400).json({
+        error: "Format gambar tidak valid."
+      });
+    }
 
-      input: [
-        {
-          role: "user",
-          content: [
-            {
-              type: "input_text",
-              text: `
+    const mimeType = match[1];
+    const base64Data = match[2];
+
+    const prompt = `
 Analyze this food photo for a fitness and nutrition tracker.
 
 Identify all visible food items.
@@ -84,25 +86,72 @@ The confidence must be exactly one of:
 "low"
 "medium"
 "high"
-`
-            },
+`;
+
+    /*
+     * Gemini API
+     *
+     * gemini-2.5-flash mendukung input gambar.
+     */
+    const response = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" +
+        encodeURIComponent(process.env.GEMINI_API_KEY),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          contents: [
             {
-              type: "input_image",
-              image_url: image,
-              detail: "high"
+              parts: [
+                {
+                  text: prompt
+                },
+                {
+                  inlineData: {
+                    mimeType: mimeType,
+                    data: base64Data
+                  }
+                }
+              ]
             }
-          ]
-        }
-      ]
-    });
+          ],
+          generationConfig: {
+            responseMimeType: "application/json",
+            temperature: 0.2
+          }
+        })
+      }
+    );
 
-    const text = response.output_text || "";
+    const data = await response.json();
 
-    console.log("OPENAI RESPONSE:", text);
+    console.log("GEMINI STATUS:", response.status);
+
+    if (!response.ok) {
+      console.error("GEMINI ERROR RESPONSE:", data);
+
+      return res.status(response.status).json({
+        error: "Gemini API error",
+        status: response.status,
+        message:
+          data?.error?.message ||
+          "Gemini API mengembalikan error."
+      });
+    }
+
+    const text =
+      data?.candidates?.[0]?.content?.parts
+        ?.map((part) => part.text || "")
+        .join("")
+        .trim() || "";
+
+    console.log("GEMINI RESPONSE:", text);
 
     if (!text) {
       return res.status(502).json({
-        error: "OpenAI returned an empty response."
+        error: "Gemini mengembalikan response kosong."
       });
     }
 
@@ -111,20 +160,22 @@ The confidence must be exactly one of:
     try {
       result = JSON.parse(text);
     } catch (parseError) {
-      const match = text.match(/\{[\s\S]*\}/);
+      console.error("JSON PARSE ERROR:", parseError);
 
-      if (!match) {
+      const matchJson = text.match(/\{[\s\S]*\}/);
+
+      if (!matchJson) {
         return res.status(502).json({
-          error: "OpenAI returned invalid JSON.",
+          error: "Gemini mengembalikan JSON yang tidak valid.",
           raw: text
         });
       }
 
       try {
-        result = JSON.parse(match[0]);
+        result = JSON.parse(matchJson[0]);
       } catch (secondParseError) {
         return res.status(502).json({
-          error: "Could not parse OpenAI JSON.",
+          error: "Tidak dapat membaca JSON dari Gemini.",
           raw: text
         });
       }
@@ -133,15 +184,11 @@ The confidence must be exactly one of:
     return res.status(200).json(result);
 
   } catch (error) {
+    console.error("GEMINI SERVER ERROR:", error);
 
-    console.error("OPENAI ERROR:", error);
-
-    return res.status(error.status || 500).json({
-      error: "OpenAI API error",
-      status: error.status || 500,
-      code: error.code || null,
-      type: error.type || null,
-      message: error.message || "Unknown OpenAI error"
+    return res.status(500).json({
+      error: "Gemini API error",
+      message: error.message || "Unknown error"
     });
   }
 };
