@@ -2,7 +2,9 @@ const OpenAI = require("openai");
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "POST only" });
+    return res.status(405).json({
+      error: "POST only"
+    });
   }
 
   try {
@@ -10,13 +12,13 @@ module.exports = async (req, res) => {
 
     if (!image || !image.startsWith("data:image/")) {
       return res.status(400).json({
-        error: "Image is required"
+        error: "Image tidak ditemukan atau format gambar tidak valid."
       });
     }
 
     if (!process.env.OPENAI_API_KEY) {
       return res.status(500).json({
-        error: "OPENAI_API_KEY belum dipasang di environment server."
+        error: "OPENAI_API_KEY belum terpasang."
       });
     }
 
@@ -30,94 +32,61 @@ module.exports = async (req, res) => {
       input: [
         {
           role: "user",
-
           content: [
             {
               type: "input_text",
-
               text: `
-You are the food analysis engine for a fitness application called CutTrack.
+You are the food analysis engine for CutTrack.
 
-Analyze the food shown in the image carefully.
+Analyze the food in this image.
 
 IMPORTANT:
-- This is an IMAGE-BASED ESTIMATE.
-- Do not pretend the measurements are exact.
-- Identify every clearly visible edible food item separately.
-- Do not combine different foods into one item if they can be visually separated.
-- Estimate portion size in grams based only on visible information.
-- If the portion cannot reasonably be estimated, use null.
-- Do not invent nutritional values when the food cannot be identified with reasonable confidence.
-- If uncertain about a food identity, clearly state the uncertainty.
-- Consider common preparation methods visible in the image.
-- If oil, sauce, dressing, gravy, cheese or toppings are visibly present, include them separately when practical.
-- Do not count plates, bowls, cutlery, packaging or non-edible objects as food.
-
-For each food item return:
-
-1. name
-2. estimated portion in grams
-3. minimum estimated portion
-4. maximum estimated portion
-5. calories
-6. protein
-7. carbohydrates
-8. fat
-9. confidence
-10. short reasoning
-
-Confidence must be:
-"high", "medium", or "low".
-
-Use null instead of inventing precision.
-
-The total nutrition must be calculated from the identified food items.
+- Identify clearly visible food items separately.
+- Estimate portion size in grams.
+- Nutrition values are estimates, not exact measurements.
+- Do not invent precision.
+- If something cannot be identified reliably, use null.
+- Consider visible sauces, oil, cheese, toppings, gravy, etc.
+- Do not count plates, bowls, packaging or utensils as food.
 
 Return ONLY valid JSON.
 
-Required JSON structure:
+Required structure:
 
 {
   "items": [
     {
       "name": "string",
-      "portion_g": number | null,
-      "portion_min_g": number | null,
-      "portion_max_g": number | null,
-      "calories_kcal": number | null,
-      "protein_g": number | null,
-      "carbs_g": number | null,
-      "fat_g": number | null,
-      "confidence": "low | medium | high",
+      "portion_g": number,
+      "calories_kcal": number,
+      "protein_g": number,
+      "carbs_g": number,
+      "fat_g": number,
+      "confidence": "low|medium|high",
       "reasoning": "string"
     }
   ],
-
   "total": {
-    "calories_kcal": number | null,
-    "protein_g": number | null,
-    "carbs_g": number | null,
-    "fat_g": number | null
+    "calories_kcal": number,
+    "protein_g": number,
+    "carbs_g": number,
+    "fat_g": number
   },
-
-  "overall_confidence": "low | medium | high",
-
-  "photo_quality": "poor | acceptable | good",
-
+  "overall_confidence": "low|medium|high",
+  "photo_quality": "poor|acceptable|good",
   "notes": "string",
-
-  "needs_user_confirmation": true | false
+  "needs_user_confirmation": true
 }
 
-Do not include markdown.
-Do not include code fences.
-Do not include explanations outside the JSON.
+Do not use markdown.
+Do not use code fences.
+Return JSON only.
 `
             },
-
             {
               type: "input_image",
-              image_url: image
+              image_url: image,
+              detail: "high"
             }
           ]
         }
@@ -128,7 +97,7 @@ Do not include explanations outside the JSON.
 
     if (!text) {
       return res.status(502).json({
-        error: "AI tidak mengembalikan hasil analisis."
+        error: "OpenAI tidak mengembalikan hasil."
       });
     }
 
@@ -141,93 +110,33 @@ Do not include explanations outside the JSON.
 
       if (!match) {
         return res.status(502).json({
-          error: "AI tidak mengembalikan JSON yang valid.",
+          error: "OpenAI tidak mengembalikan JSON yang valid.",
           raw: text
         });
       }
 
-      try {
-        result = JSON.parse(match[0]);
-      } catch (secondError) {
-        return res.status(502).json({
-          error: "Format hasil AI tidak valid.",
-          raw: text
-        });
-      }
+      result = JSON.parse(match[0]);
     }
-
-    if (!result.items || !Array.isArray(result.items)) {
-      return res.status(502).json({
-        error: "Struktur hasil AI tidak sesuai."
-      });
-    }
-
-    // Membersihkan dan memastikan angka tidak aneh
-    result.items = result.items.map((item) => ({
-      name: item.name || "Unknown food",
-
-      portion_g:
-        typeof item.portion_g === "number"
-          ? Math.max(0, item.portion_g)
-          : null,
-
-      portion_min_g:
-        typeof item.portion_min_g === "number"
-          ? Math.max(0, item.portion_min_g)
-          : null,
-
-      portion_max_g:
-        typeof item.portion_max_g === "number"
-          ? Math.max(0, item.portion_max_g)
-          : null,
-
-      calories_kcal:
-        typeof item.calories_kcal === "number"
-          ? Math.max(0, item.calories_kcal)
-          : null,
-
-      protein_g:
-        typeof item.protein_g === "number"
-          ? Math.max(0, item.protein_g)
-          : null,
-
-      carbs_g:
-        typeof item.carbs_g === "number"
-          ? Math.max(0, item.carbs_g)
-          : null,
-
-      fat_g:
-        typeof item.fat_g === "number"
-          ? Math.max(0, item.fat_g)
-          : null,
-
-      confidence:
-        ["low", "medium", "high"].includes(item.confidence)
-          ? item.confidence
-          : "low",
-
-      reasoning:
-        typeof item.reasoning === "string"
-          ? item.reasoning
-          : ""
-    }));
 
     return res.status(200).json({
       ...result,
-
       scanned_at: new Date().toISOString(),
-
       disclaimer:
-        "Nutritional values are estimates based on the food image and estimated portion size. Actual values may vary."
+        "Nilai nutrisi merupakan estimasi berdasarkan foto dan perkiraan ukuran porsi."
     });
 
   } catch (error) {
 
-    console.error("FOOD SCAN ERROR:", error);
+    console.error("========== FOOD SCAN ERROR ==========");
+    console.error(error);
+    console.error("====================================");
 
     return res.status(500).json({
-      error: "Terjadi kesalahan saat menganalisis makanan.",
-      details: error.message
+      error: "OpenAI API error",
+      message: error.message || "Unknown error",
+      status: error.status || null,
+      code: error.code || null,
+      type: error.type || null
     });
   }
 };
