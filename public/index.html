@@ -49,11 +49,52 @@
 </main>
 <script>
 /* HarTrack: tetap kompatibel dengan data CutTrack lama */
-const oldState=localStorage.getItem('hartrack')||localStorage.getItem('cuttrack');
-const state=JSON.parse(oldState||'{"profile":null,"foods":[],"drinks":[],"exercise":[false,false,false,false,false,false],"cardio":false,"history":[]}');
-state.journey=state.journey||{startDate:null,daily:{}};
-state.journey.daily=state.journey.daily||{};
-const save=()=>{localStorage.setItem('hartrack',JSON.stringify(state));localStorage.removeItem('cuttrack')};
+/* ===== PERSISTENCE: data tetap tersimpan setelah refresh ===== */
+const EMPTY_STATE={
+  profile:null,
+  foods:[],
+  drinks:[],
+  exercise:[false,false,false,false,false,false],
+  cardio:false,
+  history:[],
+  journey:{startDate:null,daily:{}}
+};
+
+function loadState(){
+  let raw=null;
+  try{ raw=localStorage.getItem('hartrack')||localStorage.getItem('cuttrack'); }catch(e){}
+  let data={};
+  try{ data=raw?JSON.parse(raw):{}; }catch(e){ data={}; }
+
+  const s={...EMPTY_STATE,...data};
+  s.foods=Array.isArray(s.foods)?s.foods:[];
+  s.drinks=Array.isArray(s.drinks)?s.drinks:[];
+  s.exercise=Array.isArray(s.exercise)?s.exercise:[false,false,false,false,false,false];
+  s.exercise=[0,1,2,3,4,5].map(i=>!!s.exercise[i]);
+  s.history=Array.isArray(s.history)?s.history:[];
+  s.journey=(s.journey&&typeof s.journey==='object')?s.journey:{startDate:null,daily:{}};
+  s.journey.daily=(s.journey.daily&&typeof s.journey.daily==='object')?s.journey.daily:{};
+  s.cardio=!!s.cardio;
+  return s;
+}
+
+const state=loadState();
+
+function save(){
+  try{
+    localStorage.setItem('hartrack',JSON.stringify(state));
+    localStorage.removeItem('cuttrack');
+    return true;
+  }catch(e){
+    console.error('HarTrack save error:',e);
+    return false;
+  }
+}
+
+/* Migrasi data CutTrack lama ke HarTrack sekali saja. */
+try{
+  if(!localStorage.getItem('hartrack')) save();
+}catch(e){}
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>openPage(b.dataset.p));
 function openPage(p){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.p===p));document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===p));refresh()}
 function saveProfile(){
@@ -72,7 +113,7 @@ function saveProfile(){
 
   state.profile={
     name:name.value||'Pengguna',sex:sex.value,age:a,height:h,weight:w,target:t,
-    goal:goal.value,level:level.value,days:+days.value,duration:duration.value,
+    goal:goal.value,activity:+activity.value,level:level.value,days:+days.value,duration:duration.value,
     equipment:equipment.value,cal:Math.round(cal),pro:Math.round(1.6*(t||w)),
     bmi:bmiV,bmiCategory:bmic
   };
@@ -362,8 +403,29 @@ function renderJourney(){
 }
 
 function refresh(){
-  if(state.profile) recordToday();
-  if(state.profile){pill.textContent='👤 '+state.profile.name;hello.textContent='Selamat datang, '+state.profile.name+' 👋';ncal.textContent=state.profile.cal;npro.textContent=state.profile.pro+' g'}
+  if(state.profile){
+    recordToday();
+    save(); // snapshot hari ini ikut tersimpan walaupun user hanya refresh halaman
+
+    pill.textContent='👤 '+(state.profile.name||'Pengguna');
+    hello.textContent='Selamat datang, '+(state.profile.name||'Pengguna')+' 👋';
+    ncal.textContent=state.profile.cal;
+    npro.textContent=state.profile.pro+' g';
+
+    // Isi kembali form Profile dari data yang sudah tersimpan.
+    name.value=state.profile.name||'';
+    sex.value=state.profile.sex||'m';
+    age.value=state.profile.age||'';
+    height.value=state.profile.height||'';
+    weight.value=state.profile.weight||'';
+    target.value=state.profile.target||'';
+    goal.value=state.profile.goal||'Fat Loss';
+    activity.value=String(state.profile.activity||activity.value||'1.2');
+    level.value=state.profile.level||'Pemula';
+    days.value=String(state.profile.days||3);
+    duration.value=state.profile.duration||'45 menit';
+    equipment.value=state.profile.equipment||'Gym lengkap';
+  }
   const cal=state.foods.reduce((s,x)=>s+x.c,0),pro=state.foods.reduce((s,x)=>s+x.p,0),carb=state.foods.reduce((s,x)=>s+x.carb,0),fat=state.foods.reduce((s,x)=>s+x.f,0),water=state.drinks.reduce((s,x)=>s+x.ml,0),pp=Math.min(100,state.profile?pro/state.profile.pro*100:0),cp=Math.min(100,carb*4/(state.profile?.cal||2000)*100),fp=Math.min(100,fat*9/(state.profile?.cal||2000)*100),wp=Math.min(100,water/2500*100),done=state.exercise.filter(Boolean).length,work=Math.round(done/6*80+(state.cardio?20:0)),nutrition=Math.round((Math.min(100,state.profile?cal/state.profile.cal*100:0)+pp+wp)/3),score=Math.round((work+nutrition)/2);
   dcal.textContent=Math.round(cal)+'/'+(state.profile?.cal||'—');dpro.textContent=Math.round(pp)+'%';dwater.textContent=Math.round(wp)+'%';dex.textContent=done+'/6';dc.textContent=state.cardio?20:0;dover.textContent=score+'%';
   [['bp',pp,'pp'],['bc',cp,'cp'],['bf',fp,'fp'],['bw',wp,'wp']].forEach(x=>{document.getElementById(x[0]).style.width=x[1]+'%';document.getElementById(x[2]).textContent=Math.round(x[1])+'%'});
