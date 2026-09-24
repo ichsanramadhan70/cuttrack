@@ -1,4 +1,7 @@
 module.exports = async (req, res) => {
+  // =========================================================
+  // ONLY POST
+  // =========================================================
   if (req.method !== "POST") {
     return res.status(405).json({
       error: "POST only"
@@ -6,43 +9,63 @@ module.exports = async (req, res) => {
   }
 
   try {
+    // =======================================================
+    // AMBIL IMAGE DARI FRONTEND
+    // =======================================================
     const { image } = req.body || {};
 
-    if (!image || !image.startsWith("data:image/")) {
+    if (!image || typeof image !== "string") {
       return res.status(400).json({
         error: "Image is required"
       });
     }
 
-    if (!process.env.GEMINI_API_KEY) {
+    if (!image.startsWith("data:image/")) {
+      return res.status(400).json({
+        error: "Invalid image format"
+      });
+    }
+
+    // =======================================================
+    // CEK GEMINI API KEY
+    // =======================================================
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey) {
       return res.status(500).json({
         error: "GEMINI_API_KEY belum dipasang di Vercel."
       });
     }
 
-    /*
-     * Image dari frontend berbentuk:
-     * data:image/jpeg;base64,XXXXX
-     *
-     * Kita pisahkan MIME type dan data base64.
-     */
+    // =======================================================
+    // AMBIL MIME TYPE DAN BASE64 IMAGE
+    // =======================================================
     const match = image.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
 
     if (!match) {
       return res.status(400).json({
-        error: "Format gambar tidak valid."
+        error: "Invalid base64 image"
       });
     }
 
     const mimeType = match[1];
     const base64Data = match[2];
 
+    // =======================================================
+    // GEMINI MODEL
+    // =======================================================
+    const model = "gemini-3.6-flash";
+
+    // =======================================================
+    // PROMPT
+    // =======================================================
     const prompt = `
 Analyze this food photo for a fitness and nutrition tracker.
 
-Identify all visible food items.
+Identify all visible food and drink items.
 
-Estimate:
+For every visible item, estimate:
+
 - food name
 - portion in grams
 - calories in kcal
@@ -50,140 +73,204 @@ Estimate:
 - carbohydrates in grams
 - fat in grams
 
-Important:
-These are estimates from an image and are NOT exact measurements.
-Do not pretend the values are laboratory-accurate.
-If the portion cannot be reasonably estimated, use null.
+Important rules:
 
-Return ONLY valid JSON.
-Do not use markdown.
-Do not use code fences.
+1. These values are estimates based on the image.
+2. Do NOT claim laboratory accuracy.
+3. If the portion cannot reasonably be estimated, use null.
+4. Do not invent food items that are not visible.
+5. If multiple food items are visible, list them separately.
+6. Calculate the total nutrition from the estimated items.
+7. Return ONLY valid JSON.
+8. Do not use Markdown.
+9. Do not use code fences.
 
-Required JSON structure:
+Use exactly this JSON structure:
 
 {
   "items": [
     {
       "name": "string",
-      "portion_g": number or null,
-      "calories_kcal": number or null,
-      "protein_g": number or null,
-      "carbs_g": number or null,
-      "fat_g": number or null
+      "portion_g": 0,
+      "calories_kcal": 0,
+      "protein_g": 0,
+      "carbs_g": 0,
+      "fat_g": 0
     }
   ],
   "total": {
-    "calories_kcal": number or null,
-    "protein_g": number or null,
-    "carbs_g": number or null,
-    "fat_g": number or null
+    "calories_kcal": 0,
+    "protein_g": 0,
+    "carbs_g": 0,
+    "fat_g": 0
   },
-  "confidence": "low",
+  "confidence": "medium",
   "notes": "string"
 }
 
-The confidence must be exactly one of:
+The confidence value MUST be exactly one of:
+
 "low"
 "medium"
 "high"
+
+If a numeric value cannot reasonably be estimated, use null.
 `;
 
-    /*
-     * Gemini API
-     *
-     * gemini-2.5-flash mendukung input gambar.
-     */
+    // =======================================================
+    // CALL GEMINI API
+    // =======================================================
     const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" +
-        encodeURIComponent(process.env.GEMINI_API_KEY),
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "x-goog-api-key": apiKey
         },
         body: JSON.stringify({
           contents: [
             {
+              role: "user",
               parts: [
                 {
-                  text: prompt
-                },
-                {
-                  inlineData: {
-                    mimeType: mimeType,
+                  inline_data: {
+                    mime_type: mimeType,
                     data: base64Data
                   }
+                },
+                {
+                  text: prompt
                 }
               ]
             }
           ],
           generationConfig: {
-            responseMimeType: "application/json",
-            temperature: 0.2
+            temperature: 0.2,
+            responseMimeType: "application/json"
           }
         })
       }
     );
 
+    // =======================================================
+    // BACA RESPONSE
+    // =======================================================
     const data = await response.json();
 
     console.log("GEMINI STATUS:", response.status);
+    console.log("GEMINI RESPONSE:", JSON.stringify(data));
 
+    // =======================================================
+    // HANDLE GEMINI ERROR
+    // =======================================================
     if (!response.ok) {
-      console.error("GEMINI ERROR RESPONSE:", data);
-
       return res.status(response.status).json({
         error: "Gemini API error",
         status: response.status,
-        message:
-          data?.error?.message ||
-          "Gemini API mengembalikan error."
+        details: data
       });
     }
 
+    // =======================================================
+    // AMBIL TEXT DARI GEMINI
+    // =======================================================
     const text =
       data?.candidates?.[0]?.content?.parts
-        ?.map((part) => part.text || "")
+        ?.map(part => part.text || "")
         .join("")
         .trim() || "";
 
-    console.log("GEMINI RESPONSE:", text);
-
     if (!text) {
       return res.status(502).json({
-        error: "Gemini mengembalikan response kosong."
+        error: "Gemini returned an empty response.",
+        raw: data
       });
     }
 
+    console.log("GEMINI TEXT:", text);
+
+    // =======================================================
+    // PARSE JSON
+    // =======================================================
     let result;
 
     try {
       result = JSON.parse(text);
     } catch (parseError) {
-      console.error("JSON PARSE ERROR:", parseError);
-
-      const matchJson = text.match(/\{[\s\S]*\}/);
-
-      if (!matchJson) {
-        return res.status(502).json({
-          error: "Gemini mengembalikan JSON yang tidak valid.",
-          raw: text
-        });
-      }
+      // Bersihkan kemungkinan ```json ... ```
+      const cleaned = text
+        .replace(/^```json\s*/i, "")
+        .replace(/^```\s*/i, "")
+        .replace(/\s*```$/i, "")
+        .trim();
 
       try {
-        result = JSON.parse(matchJson[0]);
+        result = JSON.parse(cleaned);
       } catch (secondParseError) {
-        return res.status(502).json({
-          error: "Tidak dapat membaca JSON dari Gemini.",
-          raw: text
-        });
+        // Coba cari object JSON
+        const start = cleaned.indexOf("{");
+        const end = cleaned.lastIndexOf("}");
+
+        if (start !== -1 && end !== -1 && end > start) {
+          const jsonText = cleaned.substring(start, end + 1);
+
+          try {
+            result = JSON.parse(jsonText);
+          } catch (thirdParseError) {
+            return res.status(502).json({
+              error: "Gemini returned invalid JSON.",
+              raw: text
+            });
+          }
+        } else {
+          return res.status(502).json({
+            error: "Gemini returned invalid JSON.",
+            raw: text
+          });
+        }
       }
     }
 
+    // =======================================================
+    // VALIDASI HASIL
+    // =======================================================
+    if (!result || typeof result !== "object") {
+      return res.status(502).json({
+        error: "Invalid Gemini result."
+      });
+    }
+
+    if (!Array.isArray(result.items)) {
+      result.items = [];
+    }
+
+    if (!result.total || typeof result.total !== "object") {
+      result.total = {
+        calories_kcal: null,
+        protein_g: null,
+        carbs_g: null,
+        fat_g: null
+      };
+    }
+
+    if (!["low", "medium", "high"].includes(result.confidence)) {
+      result.confidence = "medium";
+    }
+
+    if (typeof result.notes !== "string") {
+      result.notes = "";
+    }
+
+    // =======================================================
+    // SUCCESS
+    // =======================================================
     return res.status(200).json(result);
 
   } catch (error) {
+    // =======================================================
+    // SERVER ERROR
+    // =======================================================
     console.error("GEMINI SERVER ERROR:", error);
 
     return res.status(500).json({
