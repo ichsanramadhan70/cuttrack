@@ -80,6 +80,21 @@ function loadState(){
 
 const state=loadState();
 
+/* Explicit Profile DOM references.
+   Jangan memakai variabel global `name` karena browser memakai window.name. */
+const nameInput=document.getElementById('name');
+const sexInput=document.getElementById('sex');
+const ageInput=document.getElementById('age');
+const heightInput=document.getElementById('height');
+const weightInput=document.getElementById('weight');
+const targetInput=document.getElementById('target');
+const goalInput=document.getElementById('goal');
+const activityInput=document.getElementById('activity');
+const levelInput=document.getElementById('level');
+const daysInput=document.getElementById('days');
+const durationInput=document.getElementById('duration');
+const equipmentInput=document.getElementById('equipment');
+
 function save(){
   try{
     localStorage.setItem('hartrack',JSON.stringify(state));
@@ -102,19 +117,20 @@ function saveProfile(){
   if(!h||!w||!a)return alert('Isi usia, tinggi, dan berat.');
   const bmiV=w/(h/100)**2;
   const bmic=bmiV<18.5?'Underweight':bmiV<25?'Normal':bmiV<30?'Overweight':'Obesity';
-  const bmr=10*w+6.25*h-5*a+(sex.value==='m'?5:-161);
-  const tdee=bmr*+activity.value;
+  const bmr=10*w+6.25*h-5*a+(sexInput.value==='m'?5:-161);
+  const tdee=bmr*+activityInput.value;
   let cal=tdee;
-  if(goal.value==='Fat Loss')cal=Math.max(1200,tdee-500);
-  if(goal.value==='Muscle Gain')cal=tdee+250;
+  if(goalInput.value==='Fat Loss')cal=Math.max(1200,tdee-500);
+  if(goalInput.value==='Muscle Gain')cal=tdee+250;
 
   // Tanggal mulai hanya dibuat sekali dan tidak berubah saat aplikasi dibuka lagi.
   if(!state.journey.startDate) state.journey.startDate=todayKey();
 
   state.profile={
-    name:name.value||'Pengguna',sex:sex.value,age:a,height:h,weight:w,target:t,
-    goal:goal.value,activity:+activity.value,level:level.value,days:+days.value,duration:duration.value,
-    equipment:equipment.value,cal:Math.round(cal),pro:Math.round(1.6*(t||w)),
+    name:nameInput.value.trim()||'Pengguna',
+    sex:sexInput.value,age:a,height:h,weight:w,target:t,
+    goal:goalInput.value,activity:+activityInput.value,level:levelInput.value,days:+daysInput.value,duration:durationInput.value,
+    equipment:equipmentInput.value,cal:Math.round(cal),pro:Math.round(1.6*(t||w)),
     bmi:bmiV,bmiCategory:bmic
   };
 
@@ -413,18 +429,18 @@ function refresh(){
     npro.textContent=state.profile.pro+' g';
 
     // Isi kembali form Profile dari data yang sudah tersimpan.
-    name.value=state.profile.name||'';
-    sex.value=state.profile.sex||'m';
-    age.value=state.profile.age||'';
-    height.value=state.profile.height||'';
-    weight.value=state.profile.weight||'';
-    target.value=state.profile.target||'';
-    goal.value=state.profile.goal||'Fat Loss';
-    activity.value=String(state.profile.activity||activity.value||'1.2');
-    level.value=state.profile.level||'Pemula';
-    days.value=String(state.profile.days||3);
-    duration.value=state.profile.duration||'45 menit';
-    equipment.value=state.profile.equipment||'Gym lengkap';
+    nameInput.value=state.profile.name||'';
+    sexInput.value=state.profile.sex||'m';
+    ageInput.value=state.profile.age||'';
+    heightInput.value=state.profile.height||'';
+    weightInput.value=state.profile.weight||'';
+    targetInput.value=state.profile.target||'';
+    goalInput.value=state.profile.goal||'Fat Loss';
+    activityInput.value=String(state.profile.activity||'1.2');
+    levelInput.value=state.profile.level||'Pemula';
+    daysInput.value=String(state.profile.days||3);
+    durationInput.value=state.profile.duration||'45 menit';
+    equipmentInput.value=state.profile.equipment||'Gym lengkap';
   }
   const cal=state.foods.reduce((s,x)=>s+x.c,0),pro=state.foods.reduce((s,x)=>s+x.p,0),carb=state.foods.reduce((s,x)=>s+x.carb,0),fat=state.foods.reduce((s,x)=>s+x.f,0),water=state.drinks.reduce((s,x)=>s+x.ml,0),pp=Math.min(100,state.profile?pro/state.profile.pro*100:0),cp=Math.min(100,carb*4/(state.profile?.cal||2000)*100),fp=Math.min(100,fat*9/(state.profile?.cal||2000)*100),wp=Math.min(100,water/2500*100),done=state.exercise.filter(Boolean).length,work=Math.round(done/6*80+(state.cardio?20:0)),nutrition=Math.round((Math.min(100,state.profile?cal/state.profile.cal*100:0)+pp+wp)/3),score=Math.round((work+nutrition)/2);
   dcal.textContent=Math.round(cal)+'/'+(state.profile?.cal||'—');dpro.textContent=Math.round(pp)+'%';dwater.textContent=Math.round(wp)+'%';dex.textContent=done+'/6';dc.textContent=state.cardio?20:0;dover.textContent=score+'%';
