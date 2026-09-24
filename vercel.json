@@ -1,22 +1,23 @@
 {
   "version": 2,
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "nodejs22.x"
+  "builds": [
+    {
+      "src": "api/food-scan.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
     }
-  },
-  "rewrites": [
+  ],
+  "routes": [
     {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
+      "src": "/api/food-scan",
+      "dest": "/api/food-scan.js"
     },
     {
-      "source": "/",
-      "destination": "/public/index.html"
-    },
-    {
-      "source": "/:path*",
-      "destination": "/public/:path*"
+      "src": "/(.*)",
+      "dest": "/public/$1"
     }
   ]
 }
